@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Melvor Idle 2 – Mining Dashboard</title>
+<style>
+:root{--bg:#f6f3ec;--card:#fff;--ink:#23201a;--mute:#6f685a;--line:#e3ddcf;--ore:#b7791f;--ess:#7c6bd6;--gem:#1f8ea3;--best:#2f9e44;--gold:#c28a00;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17150f;--card:#221f17;--ink:#f0eadb;--mute:#a59d88;--line:#373224;--ore:#e0a645;--ess:#a597f0;--gem:#4cc3d8;--best:#5fd47a;--gold:#f0c040}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:880px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:24px;margin:0 0 4px}
+.sub{color:var(--mute);margin:0 0 16px}
+.tabs{display:flex;gap:8px;margin-bottom:16px}
+.tabs button{flex:1;padding:12px;font:inherit;font-weight:700;font-size:16px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;cursor:pointer}
+.tabs button.on{background:var(--best);border-color:var(--best);color:#fff}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+.hero{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+.hero .l{color:var(--mute);font-size:13px}
+.hero b{font-size:28px;color:var(--best);display:block}
+details>summary{cursor:pointer;font-weight:700;font-size:16px}
+h3{font-size:14px;margin:14px 0 6px}
+.chip{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:5px 11px;margin:0 6px 6px 0;cursor:pointer;font-size:13px}
+.chip.on{border-color:var(--best)}
+.chip small{color:var(--mute)}
+.btn{background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:5px 10px;font:inherit;font-size:13px;cursor:pointer;margin-right:6px}
+.prices{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
+.prices label{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:13px}
+.prices input{width:84px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:4px 6px;font:inherit;font-size:13px}
+.row{display:grid;grid-template-columns:130px 1fr 80px;gap:10px;align-items:center;padding:5px 0}
+.name{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar{height:16px;border-radius:8px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:8px}
+.val{text-align:right;font-variant-numeric:tabular-nums}
+.best .name::after{content:" ★";color:var(--best)}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:520px}
+th,td{padding:7px 8px;text-align:right;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--mute);font-weight:600;font-size:13px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+.legend{color:var(--mute);font-size:13px;margin-top:8px}
+code{background:var(--line);padding:1px 5px;border-radius:4px}
+li{margin:4px 0}
+</style>
+</head>
+<body>
+<main>
+<h1>Melvor Idle 2 – Mining Dashboard</h1>
+<p class="sub">Which rock is best to mine? Based on v0.11.4-alpha (demo), 1.5s swing, no respawn time.</p>
+
+<div class="tabs" role="tablist">
+  <button id="tX" class="on">XP / hour</button>
+  <button id="tG">Gold / hour</button>
+</div>
+
+<div class="card hero">
+  <div><div class="l">Best rock</div><b id="bestName">–</b></div>
+  <div><div class="l" id="hLbl">XP per hour</div><b id="bestVal">–</b></div>
+  <div style="flex:1;min-width:200px" id="bestNote" class="sub" style="margin:0"></div>
+</div>
+
+<div class="card" id="priceCard" style="display:none">
+  <details open>
+    <summary>Item sell prices (gold each)</summary>
+    <div class="legend" style="margin:6px 0 10px">Enter what each item sells for. Gold/hr is drops, geodes and Stone multiplied by these prices.</div>
+    <div class="prices" id="prices"></div>
+  </details>
+</div>
+
+<div class="card">
+  <details>
+    <summary>Upgrades &amp; equipment</summary>
+    <div style="margin-top:10px"><button class="btn" id="bUp">All shop upgrades on</button><button class="btn" id="bBase">All shop upgrades off</button></div>
+    <h3>Pickaxe heads (rock break chance)</h3><div id="upgs"></div>
+    <h3>Pickaxe handles (output doubling)</h3><div id="hnd"></div>
+    <h3>Pickaxe bindings (geode chance)</h3><div id="bnd"></div>
+    <h3>Mastery Guild</h3><div id="mg"></div>
+    <h3>Equipment</h3><div id="equip"></div>
+    <div class="legend">Handles and bindings change items and gold, not XP. Unowned ones are what-ifs and start switched off. More equipment coming soon. Mastery Guild bonuses toggle the same way.</div>
+  </details>
+</div>
+
+<div class="card">
+  <div id="chart"></div>
+  <div class="legend"><span class="dot" style="background:var(--ore)"></span>Ore Vein <span class="dot" style="background:var(--ess);margin-left:12px"></span>Essence Vein <span class="dot" style="background:var(--gem);margin-left:12px"></span>Gem Vein</div>
+</div>
+
+<div class="card scroll">
+  <table><thead id="thead"></thead><tbody id="tbody"></tbody></table>
+</div>
+
+<div class="card">
+  <h2 style="font-size:17px;margin:0 0 8px">How it’s calculated</h2>
+  <ul>
+    <li>Each swing adds the rock’s break % as progress toward 100 (Mithril at 30%: 30, 60, 90, 100 = 4 swings). Swings to break = <code>ceil(100 ÷ break %)</code>.</li>
+    <li>Each swing also has that same % chance to break the rock instantly. XP and the main drop are awarded on break.</li>
+    <li>Expected swings per rock = <code>(1 − (1 − p)^H) ÷ p</code>, where p is the break chance and H the swings to break.</li>
+    <li>XP/hr = <code>2,400 swings × XP per break ÷ expected swings</code>. Breaks/hr = <code>2,400 ÷ expected swings</code>.</li>
+    <li>Drops/hr = breaks/hr × items per break (1, or 2 for Rune Essence) × (1 + output doubling). Geodes/hr = <code>2,400 × geode chance × (1 + doubling)</code>, since the geode roll is per hit. Only Copper, Iron, Silver, Mithril, Gold and Adamantite show a geode chance. Stone/hr from the Stoner’s Pickaxe = <code>2,400 × 2.5% × (1 + doubling)</code>.</li>
+    <li>Gold/hr = drops × drop price + geodes × geode price + Stone × Stone price. Prices are fixed sell values per item.</li>
+    <li>Shop pickaxe heads add rock break chance: Copper, Steel and Adamant give Ore Veins +25%, +25% and +50%. Iron and Adamant give Essence Veins +25% each. Mithril gives Gem Veins +25%. Bonuses add together.</li>
+    <li>Assumptions: the 0.30% on-hit chance on the rock cards includes the two owned bindings (+0.03% each), so the base is 0.24%. Output doubling applies to every drop. The Stoner’s Pickaxe +2.5% is the value shown while it is damaged. XP per break on the rock cards is assumed to include the Apprentice Miner +10% Mining XP, so switching it off divides that out. Journeyman Miner (+5% output doubling) isn’t earned yet, so it starts off.</li>
+  </ul>
+</div>
+</main>
+<script>
+var ROCKS=[
+{n:"Stone",t:"o",p:40,x:3},{n:"Clay",t:"o",p:100/3,x:4},{n:"Copper Ore",t:"o",p:30,x:6},
+{n:"Iron Ore",t:"o",p:24,x:11},{n:"Silver Ore",t:"o",p:22,x:13},{n:"Coal",t:"o",p:33,x:11},
+{n:"Mithril Ore",t:"o",p:15,x:24},{n:"Gold Ore",t:"o",p:18,x:22},{n:"Adamantite Ore",t:"o",p:12.5,x:37},
+{n:"Rune Essence",t:"e",p:100/3,x:5,q:2},{n:"Attuned Essence",t:"e",p:20,x:14},
+{n:"Topaz Vein",t:"g",p:8,x:31},{n:"Sapphire Vein",t:"g",p:7,x:50},{n:"Ruby Vein",t:"g",p:5,x:101}
+];
+var COL={o:"var(--ore)",e:"var(--ess)",g:"var(--gem)"};
+var GEO=["Copper Ore","Iron Ore","Silver Ore","Mithril Ore","Gold Ore","Adamantite Ore"],GEO0=0.24;
+var UPG=[
+{n:"Copper Pickaxe Head",s:"Ore +25%",o:25,on:true},
+{n:"Iron Pickaxe Head",s:"Essence +25%",e:25,on:true},
+{n:"Steel Pickaxe Head",s:"Ore +25%",o:25,on:true},
+{n:"Mithril Pickaxe Head",s:"Gem +25%",g:25,on:true},
+{n:"Adamant Pickaxe Head",s:"Ore +50%, Essence +25%",o:50,e:25,on:true}];
+var HND=[
+{n:"Wooden Handle",s:"+1% doubling",d:1,on:true},
+{n:"Oak Handle",s:"+2% doubling",d:2,on:true},
+{n:"Willow Handle",s:"+2% doubling",d:2,on:true},
+{n:"Maple Handle",s:"+2% doubling · not owned",d:2,on:false}];
+var BND=[
+{n:"Basic Binding",s:"+0.03% geode",k:0.03,on:true},
+{n:"Wrapped Binding",s:"+0.03% geode",k:0.03,on:true},
+{n:"Looped Binding",s:"+0.03% geode · not owned",k:0.03,on:false}];
+var EQ=[{n:"Stoner’s Pickaxe (Damaged)",s:"+2.5% Stone per hit",st:2.5,on:true}];
+var MG=[
+{n:"Apprentice Miner",s:"+10% Mining XP",x:10,on:true},
+{n:"Journeyman Miner",s:"+5% doubling · not yet earned",d:5,on:false}];
+var GROUPS={u:UPG,h:HND,b:BND,q:EQ,m:MG};
+var ITEMS=["Stone","Clay","Copper Ore","Iron Ore","Silver Ore","Coal","Mithril Ore","Gold Ore","Adamantite Ore","Rune Essence","Attuned Essence","Topaz","Sapphire","Ruby","Geode"];
+var PR={};ITEMS.forEach(function(i){PR[i]=0});
+var DEF={"Adamantite Ore":22,"Coal":5,"Iron Ore":6,"Stone":2,"Mithril Ore":18,"Gold Ore":16,"Copper Ore":3,"Silver Ore":10,"Clay":1,"Rune Essence":1,"Attuned Essence":1,"Topaz":20,"Sapphire":36,"Ruby":60,"Geode":28};
+for(var k in DEF)PR[k]=DEF[k];
+var tab="x";
+function sum(k){var s=0;for(var g in GROUPS)GROUPS[g].forEach(function(u){if(u.on)s+=u[k]||0});return s}
+function itemOf(n){return{"Topaz Vein":"Topaz","Sapphire Vein":"Sapphire","Ruby Vein":"Ruby"}[n]||n}
+function calc(r){
+  var p=Math.min(100,Math.max(0.01,r.p*(1+sum(r.t)/100)));
+  var H=Math.ceil(100/p-1e-9),q=p/100;
+  var E=(1-Math.pow(1-q,H))/q,x=r.x*Math.max(0,1+sum("x")/100)/1.1,br=2400/E,dm=1+sum("d")/100;
+  var g=GEO.indexOf(r.n)>=0?Math.max(0,GEO0+sum("k"))/100:0;
+  var it=br*(r.q||1)*dm,ge=2400*g*dm,sto=2400*sum("st")/100*dm;
+  return{n:r.n,t:r.t,p:p,H:H,x:x,xph:2400*x/E,br:br,it:it,ge:ge,sto:sto,
+    gph:it*(PR[itemOf(r.n)]||0)+ge*(PR.Geode||0)+sto*(PR.Stone||0)};
+}
+function fmt(n){return Math.round(n).toLocaleString("en-US")}
+function fmt1(n){return n.toLocaleString("en-US",{maximumFractionDigits:1})}
+function chips(k){return GROUPS[k].map(function(u,i){return '<label class="chip'+(u.on?' on':'')+'"><input type="checkbox" data-c="'+k+i+'"'+(u.on?' checked':'')+'> '+u.n+' <small>'+u.s+'</small></label>'}).join("")}
+function controls(){
+  document.getElementById("upgs").innerHTML=chips("u");
+  document.getElementById("hnd").innerHTML=chips("h");
+  document.getElementById("bnd").innerHTML=chips("b");
+  document.getElementById("equip").innerHTML=chips("q");
+  document.getElementById("mg").innerHTML=chips("m");
+}
+function render(){
+  var gold=tab==="g",mv=function(r){return gold?r.gph:r.xph};
+  var d=ROCKS.map(calc).sort(function(a,b){return mv(b)-mv(a)}),max=mv(d[0])||1,has=mv(d[0])>0;
+  document.getElementById("hLbl").textContent=gold?"Gold per hour":"XP per hour";
+  document.getElementById("bestName").textContent=has?d[0].n:"–";
+  document.getElementById("bestVal").textContent=has?"~"+fmt(mv(d[0])):"–";
+  document.getElementById("bestNote").textContent=has?"Runner-up: "+d[1].n+" at ~"+fmt(mv(d[1]))+(gold?" gold/hr.":" XP/hr."):"Enter item prices below to see gold per hour.";
+  document.getElementById("tX").className=gold?"":"on";
+  document.getElementById("tG").className=gold?"on":"";
+  document.getElementById("chart").innerHTML=d.map(function(r,i){
+    return '<div class="row'+(i==0&&has?' best':'')+'"><span class="name">'+r.n+'</span><div class="bar"><i style="width:'+(mv(r)/max*100).toFixed(1)+'%;background:'+COL[r.t]+'"></i></div><span class="val">'+fmt(mv(r))+'</span></div>';
+  }).join("");
+  document.getElementById("thead").innerHTML=gold?
+    '<tr><th>Rock</th><th>Drops / hr</th><th>Geodes / hr</th><th>Stone / hr</th><th>Gold / hr</th></tr>':
+    '<tr><th>Rock</th><th>Break %</th><th>Swings to break</th><th>XP / break</th><th>Breaks / hr</th><th>XP / hr</th></tr>';
+  document.getElementById("tbody").innerHTML=d.map(function(r){
+    var nm='<td><span class="dot" style="background:'+COL[r.t]+'"></span>'+r.n+'</td>';
+    return '<tr>'+nm+(gold?
+      '<td>'+fmt(r.it)+'</td><td>'+(r.ge?fmt1(r.ge):"–")+'</td><td>'+(r.sto?fmt1(r.sto):"–")+'</td><td>'+fmt(r.gph)+'</td>':
+      '<td>'+(+r.p.toFixed(2))+'%</td><td>'+r.H+'</td><td>'+(+r.x.toFixed(1))+'</td><td>'+fmt(r.br)+'</td><td>'+fmt(r.xph)+'</td>')+'</tr>';
+  }).join("");
+}
+document.getElementById("prices").innerHTML=ITEMS.map(function(i){return '<label>'+i+'<input type="number" min="0" step="any" placeholder="0" value="'+(PR[i]||"")+'" data-p="'+i+'"></label>'}).join("");
+document.addEventListener("input",function(e){var t=e.target;if(t.dataset.p!==undefined){PR[t.dataset.p]=parseFloat(t.value)||0;render()}});
+document.addEventListener("change",function(e){var t=e.target;if(t.dataset.c!==undefined){GROUPS[t.dataset.c.charAt(0)][+t.dataset.c.slice(1)].on=t.checked;controls();render()}});
+function setAll(v){UPG.forEach(function(u){u.on=v});controls();render()}
+document.getElementById("bUp").onclick=function(){setAll(true)};
+document.getElementById("bBase").onclick=function(){setAll(false)};
+document.getElementById("tX").onclick=function(){tab="x";render()};
+document.getElementById("tG").onclick=function(){tab="g";render()};
+controls();render();
+</script>
+</body>
+</html>
