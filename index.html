@@ -176,46 +176,74 @@ li{margin:4px 0}
 <script>
 var ROCKS=[
 {n:"Stone",lv:1,t:"o",p:40,x:3},{n:"Clay",lv:3,t:"o",p:100/3,x:4},{n:"Copper Ore",lv:5,t:"o",p:30,x:6},
-{n:"Iron Ore",lv:10,t:"o",p:24,x:11},{n:"Silver Ore",lv:18,t:"o",p:22,x:13},{n:"Coal",lv:25,t:"o",p:33,x:11},
-{n:"Mithril Ore",lv:35,t:"o",p:15,x:24},{n:"Gold Ore",lv:38,t:"o",p:18,x:22},{n:"Adamantite Ore",lv:45,t:"o",p:12.5,x:37},
-{n:"Rune Essence",lv:8,t:"e",p:100/3,x:5,q:2},{n:"Attuned Essence",lv:42,t:"e",p:20,x:14},
-{n:"Topaz Vein",lv:12,t:"g",p:8,x:31},{n:"Sapphire Vein",lv:32,t:"g",p:7,x:50},{n:"Ruby Vein",lv:47,t:"g",p:5,x:101}
+{n:"Iron Ore",lv:10,t:"o",p:24,x:10},{n:"Silver Ore",lv:18,t:"o",p:22,x:12},{n:"Coal",lv:25,t:"o",p:33,x:10},
+{n:"Mithril Ore",lv:35,t:"o",p:15,x:22},{n:"Gold Ore",lv:38,t:"o",p:18,x:20},{n:"Adamantite Ore",lv:45,t:"o",p:12.5,x:34},
+{n:"Rune Essence",lv:8,t:"e",p:100/3,x:5,q:2},{n:"Attuned Essence",lv:42,t:"e",p:20,x:13},
+{n:"Topaz Vein",lv:12,t:"g",p:8,x:29},{n:"Sapphire Vein",lv:32,t:"g",p:7,x:46},{n:"Ruby Vein",lv:47,t:"g",p:5,x:92},
+{n:"Runite Ore",lv:55,t:"o",p:10,x:50},{n:"Dawnsteel Ore",lv:70,t:"o",p:9,x:62},{n:"Diamond Vein",lv:90,t:"g",p:3,x:210},{n:"Jadestone Vein",lv:97,t:"g",p:2,x:333},
+{n:"Fallen Star",lv:30,t:"s",p:25,x:13,need:"Starfall Sightings Log",req:"Starfall Sightings Log on the Mining toolbelt"},{n:"Golden Fallen Star",lv:50,t:"s",p:20,x:24,req:"Golden Starfall Sightings Log on the Mining toolbelt"}
 ];
-var COL={o:"var(--ore)",e:"var(--ess)",g:"var(--gem)",t:"var(--tree)",b:"var(--bush)"},S;
-var GEO=["Copper Ore","Iron Ore","Silver Ore","Mithril Ore","Gold Ore","Adamantite Ore"],GEO0=0.24;
+var COL={o:"var(--ore)",e:"var(--ess)",g:"var(--gem)",t:"var(--tree)",b:"var(--bush)",s:"#e0a020"},S;
+var GEO=["Copper Ore","Iron Ore","Silver Ore","Mithril Ore","Gold Ore","Adamantite Ore","Runite Ore","Dawnsteel Ore"],GEO0=0.25;
 var UPG=[
-{n:"Copper Pickaxe Head",s:"Ore +25%",o:25,on:false},
-{n:"Iron Pickaxe Head",s:"Essence +25%",e:25,on:false},
-{n:"Steel Pickaxe Head",s:"Ore +25%",o:25,on:false},
-{n:"Mithril Pickaxe Head",s:"Gem +25%",g:25,on:false},
-{n:"Adamant Pickaxe Head",s:"Ore +50%, Essence +25%",o:50,e:25,on:false}];
+{n:"Copper Pickaxe Head",s:"+25% Ore Vein break chance",o:25,on:true},
+{n:"Iron Pickaxe Head",s:"+25% Essence Vein break chance",e:25,on:true},
+{n:"Steel Pickaxe Head",s:"+25% Ore Vein break chance",o:25,on:true},
+{n:"Mithril Pickaxe Head",s:"+25% Gem Vein break chance",g:25,on:true},
+{n:"Adamant Pickaxe Head",s:"+50% Ore Vein, +25% Essence Vein break chance",o:50,e:25,on:true},
+{n:"Rune Pickaxe Head",s:"+50% Gem Vein break chance",g:50,on:false},
+{n:"Dawnsteel Pickaxe Head",s:"+50% Ore Vein, +50% Essence Vein break chance",o:50,e:50,on:false},
+{n:"Dragon Pickaxe Head",s:"+50% Ore Vein break chance",o:50,on:false},
+{n:"Ironsteel Pickaxe Head Coating",s:"+10% break chance for Iron, Mithril, Adamantite and Runite Ore",coat:10,on:false}];
 var HND=[
-{n:"Wooden Handle",s:"+1% doubling",d:1,on:false},
-{n:"Oak Handle",s:"+2% doubling",d:2,on:false},
-{n:"Willow Handle",s:"+2% doubling",d:2,on:false},
-{n:"Maple Handle",s:"+2% doubling",d:2,on:false}];
+{n:"Wooden Pickaxe Handle",s:"+1% Output Doubling",d:1,on:true},
+{n:"Oak Pickaxe Handle",s:"+2% Output Doubling",d:2,on:true},
+{n:"Willow Pickaxe Handle",s:"+2% Output Doubling",d:2,on:true},
+{n:"Maple Pickaxe Handle",s:"+2% Output Doubling",d:2,on:true},
+{n:"Yew Pickaxe Handle",s:"+2% Output Doubling",d:2,on:true},
+{n:"Magic Pickaxe Handle",s:"+2% Output Doubling",d:2,on:false},
+{n:"Hard Oak Pickaxe Handle",s:"+2% Output Doubling",d:2,on:false},
+{n:"Redwood Pickaxe Handle",s:"+2% Output Doubling",d:2,on:false}];
 var BND=[
-{n:"Basic Binding",s:"+0.03% geode",k:0.03,on:false},
-{n:"Wrapped Binding",s:"+0.03% geode",k:0.03,on:false},
-{n:"Looped Binding",s:"+0.03% geode",k:0.03,on:false}];
-var EQ=[{n:"Stoner’s Pickaxe (Damaged)",s:"+2.5% Stone per hit",st:2.5,slot:"tool",on:false}];
+{n:"Basic Pickaxe Binding",s:"+0.03% Geode chance",k:0.03,on:true},
+{n:"Wrapped Pickaxe Binding",s:"+0.03% Geode chance",k:0.03,on:true},
+{n:"Looped Pickaxe Binding",s:"+0.03% Geode chance",k:0.03,on:true},
+{n:"Reinforced Pickaxe Binding",s:"+0.03% Geode chance",k:0.03,on:true},
+{n:"Bolstered Pickaxe Binding",s:"+0.05% Geode chance",k:0.05,on:false},
+{n:"Fortified Pickaxe Binding",s:"+0.05% Geode chance",k:0.05,on:false}];
+var EQ=[{n:"Stoner’s Pickaxe",s:"+5% Stone per hit",st:5,slot:"tool",on:false},
+{n:"Stoner’s Pickaxe (Damaged)",s:"+2.5% Stone per hit",st:2.5,slot:"tool",on:true},
+{n:"Intermediate Mining Hat",s:"+6% Ore Vein break, +4% Gem Vein break · set piece",o:6,g:4,set:"im",slot:"helm",on:true},
+{n:"Intermediate Mining Body",s:"+6% Ore Vein break, +4% Gem Vein break · set piece",o:6,g:4,set:"im",slot:"body",on:true},
+{n:"Intermediate Mining Pants",s:"+6% Ore Vein break, +4% Gem Vein break · set piece",o:6,g:4,set:"im",slot:"legs",on:true},
+{n:"Sulfur Protection Gloves",s:"No bonuses",slot:"gloves",on:false},
+{n:"Miners Boots",s:"+15% Rock Break chance, +2% Output Doubling, +3% min Rock Break bar (not modelled)",pb:15,d:2,slot:"boots",on:true},
+{n:"Starfall Sightings Log",s:"Lets you mine Fallen Stars",slot:"pic",on:true},
+{n:"Meteorite Sightings Log",s:"Lets you mine Meteorite Ore (no rock data yet)",slot:"pic",on:false},
+{n:"Mining Potion P1-A",s:"+25% Ore Vein break chance",o:25,slot:"pot",on:false},
+{n:"Mining Potion P2-A",s:"+50% Ore Vein break chance",o:50,slot:"pot",on:false},
+{n:"Mining Potion P2-B",s:"+25% Ore Vein break chance, +1 base product from Essence Veins",o:25,eq1:1,slot:"pot",on:true}];
+function imSet(){return EQ.filter(function(e){return e.set==="im"&&e.on}).length>=3}
 var MG=[
 {n:"Apprentice Miner",s:"+10% Mining XP",x:10,on:false},
-{n:"Journeyman Miner",s:"+5% doubling",d:5,on:false}];
+{n:"Journeyman Miner",s:"+5% doubling",d:5,on:false},
+{n:"Veteran Miner",s:"+10% Mining XP, extra toolbelt slot",x:10,on:false},
+{n:"Stanley (pet)",s:"+10% rock break chance (all rocks)",pb:10,on:false}];
 var GROUPS={u:UPG,h:HND,b:BND,q:EQ,m:MG};
-var ITEMS=["Stone","Clay","Copper Ore","Iron Ore","Silver Ore","Coal","Mithril Ore","Gold Ore","Adamantite Ore","Rune Essence","Attuned Essence","Topaz","Sapphire","Ruby","Geode"];
+var ITEMS=["Stone","Clay","Copper Ore","Iron Ore","Silver Ore","Coal","Mithril Ore","Gold Ore","Adamantite Ore","Rune Essence","Attuned Essence","Topaz","Sapphire","Ruby","Runite Ore","Dawnsteel Ore","Uncut Diamond","Uncut Jadestone","Stardust","Golden Stardust","Geode"];
 var PR={};ITEMS.forEach(function(i){PR[i]=0});
-var DEF={"Adamantite Ore":22,"Coal":5,"Iron Ore":6,"Stone":2,"Mithril Ore":18,"Gold Ore":16,"Copper Ore":3,"Silver Ore":10,"Clay":1,"Rune Essence":1,"Attuned Essence":1,"Topaz":20,"Sapphire":36,"Ruby":60,"Geode":28};
+var DEF={"Adamantite Ore":22,"Coal":5,"Iron Ore":6,"Stone":2,"Mithril Ore":18,"Gold Ore":16,"Copper Ore":3,"Silver Ore":10,"Clay":1,"Rune Essence":1,"Attuned Essence":1,"Topaz":20,"Sapphire":36,"Ruby":60,"Geode":28,"Runite Ore":30,"Dawnsteel Ore":37,"Uncut Diamond":254,"Uncut Jadestone":449,"Stardust":17,"Golden Stardust":1242};
 for(var k in DEF)PR[k]=DEF[k];
 var tab="x";
 function sum(k){var s=0;for(var g in GROUPS)GROUPS[g].forEach(function(u){if(u.on)s+=u[k]||0});return s}
-function itemOf(n){return{"Topaz Vein":"Topaz","Sapphire Vein":"Sapphire","Ruby Vein":"Ruby"}[n]||n}
+function itemOf(n){return{"Topaz Vein":"Topaz","Sapphire Vein":"Sapphire","Ruby Vein":"Ruby","Diamond Vein":"Uncut Diamond","Jadestone Vein":"Uncut Jadestone","Fallen Star":"Stardust","Golden Fallen Star":"Golden Stardust"}[n]||n}
 function calc(r){
-  var p=Math.min(100,Math.max(0.01,r.p*(1+sum(r.t)/100)));
+  var p=Math.min(100,Math.max(0.01,r.p*(1+(sum(r.t)+sum("pb")+(["Iron Ore","Mithril Ore","Adamantite Ore","Runite Ore"].indexOf(r.n)>=0?sum("coat"):0))/100)));
   var H=Math.ceil(100/p-1e-9),q=p/100;
-  var E=(1-Math.pow(1-q,H))/q,x=r.x*Math.max(0,1+sum("x")/100)/1.1,br=2400/E,dm=1+sum("d")/100;
+  var E=(1-Math.pow(1-q,H))/q,x=r.x*Math.max(0,1+sum("x")/100),br=2400/E,dm=1+sum("d")/100;
   var g=GEO.indexOf(r.n)>=0?Math.max(0,GEO0+sum("k"))/100:0;
-  var it=br*(r.q||1)*dm,ge=2400*g*dm,sto=2400*sum("st")/100*dm;
+  var sb=imSet()?1.2:1;
+  var it=br*((r.q||1)+(r.t==="e"?sum("eq1"):0))*dm,ge=2400*g*sb*sb*dm,sto=2400*sum("st")/100*sb*dm;
   return{n:r.n,t:r.t,p:p,H:H,x:x,xph:2400*x/E,br:br,it:it,ge:ge,sto:sto,
     gph:it*(PR[itemOf(r.n)]||0)+ge*(PR.Geode||0)+sto*(PR.Stone||0),
     parts:[[itemOf(r.n),it*(PR[itemOf(r.n)]||0)],["Geodes",ge*(PR.Geode||0)],["Stone",sto*(PR.Stone||0)]]};
@@ -224,14 +252,23 @@ function fmt(n){return Math.round(n).toLocaleString("en-US")}
 function fmt1(n){return n.toLocaleString("en-US",{maximumFractionDigits:1})}
 var IC={
 "Copper Pickaxe Head":["h","#b87333"],"Iron Pickaxe Head":["h","#9aa0a6"],"Steel Pickaxe Head":["h","#5d6b7a"],"Mithril Pickaxe Head":["h","#3b82f6"],"Adamant Pickaxe Head":["h","#4caf6a"],
-"Wooden Handle":["s","#b58b5a"],"Oak Handle":["s","#8d6a3e"],"Willow Handle":["s","#9aa86a"],"Maple Handle":["s","#c9703a"],
-"Basic Binding":["b","#c2a878"],"Wrapped Binding":["b","#8b5a3c"],"Looped Binding":["b","#6b7a8f"],
-"Stoner’s Pickaxe (Damaged)":["h","#7a7f88"],"Apprentice Miner":["t","#e0a020"],"Journeyman Miner":["t","#a0a4aa"]};
+"Rune Pickaxe Head":["h","#2bb3b3"],"Dawnsteel Pickaxe Head":["h","#e0a020"],"Dragon Pickaxe Head":["h","#d33"],"Ironsteel Pickaxe Head Coating":["h","#7a8a9a"],
+"Wooden Pickaxe Handle":["s","#b58b5a"],"Oak Pickaxe Handle":["s","#8d6a3e"],"Willow Pickaxe Handle":["s","#9aa86a"],"Maple Pickaxe Handle":["s","#c9703a"],"Yew Pickaxe Handle":["s","#7a4a2a"],"Magic Pickaxe Handle":["s","#5a6ad6"],"Hard Oak Pickaxe Handle":["s","#5a3b22"],"Redwood Pickaxe Handle":["s","#a33"],
+"Basic Pickaxe Binding":["b","#c2a878"],"Wrapped Pickaxe Binding":["b","#8b5a3c"],"Looped Pickaxe Binding":["b","#6b7a8f"],"Reinforced Pickaxe Binding":["b","#9aa0a6"],"Bolstered Pickaxe Binding":["b","#b87333"],"Fortified Pickaxe Binding":["b","#4a5a6a"],
+"Mining Potion P2-A":["pot","#3b82f6"],"Mining Potion P2-B":["pot","#2bb3b3"],
+"Stoner’s Pickaxe (Damaged)":["h","#7a7f88"],"Stoner’s Pickaxe":["h","#a9aeb6"],"Intermediate Mining Hat":["hat","#8a6a3a"],"Intermediate Mining Body":["bod","#8a6a3a"],"Intermediate Mining Pants":["leg","#8a6a3a"],"Sulfur Protection Gloves":["glv","#7b5cc4"],"Miners Boots":["bts","#9a6b3f"],"Starfall Sightings Log":["log","#e0a020"],"Meteorite Sightings Log":["log","#5a6fb8"],"Mining Potion P1-A":["pot","#5fa8d3"],"Apprentice Miner":["t","#e0a020"],"Journeyman Miner":["t","#a0a4aa"],"Veteran Miner":["t","#b87333"],"Stanley (pet)":["b","#9aa0a6"]};
 var SH={
 h:'<path d="M2 12Q12 0 22 12l-3 1.5Q12 6 5 13.5z" fill="C"/><rect x="11" y="9" width="2" height="13" rx="1" fill="#8a6a43"/>',
 s:'<rect x="10.5" y="1" width="3" height="22" rx="1.5" fill="C" transform="rotate(45 12 12)"/>',
 b:'<rect x="10.5" y="2" width="3" height="20" rx="1.5" fill="#8a6a43"/><rect x="8.5" y="7" width="7" height="2.5" rx="1" fill="C"/><rect x="8.5" y="11" width="7" height="2.5" rx="1" fill="C"/><rect x="8.5" y="15" width="7" height="2.5" rx="1" fill="C"/>',
-t:'<path d="M7 3h10v5a5 5 0 0 1-10 0z" fill="C"/><path d="M7 5H4v2a3 3 0 0 0 3 3M17 5h3v2a3 3 0 0 1-3 3" fill="none" stroke="C" stroke-width="1.6"/><rect x="11" y="13" width="2" height="4" fill="C"/><rect x="8" y="17" width="8" height="3" rx="1" fill="C"/>'};
+t:'<path d="M7 3h10v5a5 5 0 0 1-10 0z" fill="C"/><path d="M7 5H4v2a3 3 0 0 0 3 3M17 5h3v2a3 3 0 0 1-3 3" fill="none" stroke="C" stroke-width="1.6"/><rect x="11" y="13" width="2" height="4" fill="C"/><rect x="8" y="17" width="8" height="3" rx="1" fill="C"/>',
+hat:'<path d="M5 13a7 7 0 0 1 14 0z" fill="C"/><rect x="3" y="13" width="18" height="3" rx="1" fill="C"/><circle cx="12" cy="9" r="1.8" fill="#ffe08a"/>',
+bod:'<path d="M5 5l4-2 3 2 3-2 4 2-1 5-2 .5V20H8v-9.5L6 10z" fill="C"/>',
+leg:'<path d="M7 3h10l1 18h-4l-2-9-2 9H6z" fill="C"/>',
+glv:'<path d="M7 21v-8L5 9l1.5-1L9 11V4h1.6v6h.8V3h1.6v7h.8V4h1.6v7h.8V6h1.5v9l-1 6z" fill="C"/>',
+bts:'<path d="M5 3h5v12l3 2v3H4v-4l1-2z" fill="C"/><path d="M14 3h5v12l1 2v3h-6z" fill="C"/>',
+log:'<rect x="5" y="3" width="14" height="18" rx="1.5" fill="C"/><rect x="8" y="7" width="8" height="1.6" fill="#fff" opacity=".7"/><rect x="8" y="11" width="8" height="1.6" fill="#fff" opacity=".7"/><path d="M12 14l1 2 2 .3-1.5 1.4.4 2-1.9-1-1.9 1 .4-2L9 16.3l2-.3z" fill="#fff"/>',
+pot:'<path d="M10 2h4v5l5 8a5 5 0 0 1-4 7H9a5 5 0 0 1-4-7l5-8z" fill="C"/><rect x="9.5" y="1" width="5" height="2" rx=".8" fill="#8a6a43"/>'};
 function ico(n){var c=IC[n];return c?'<svg viewBox="0 0 24 24" aria-hidden="true">'+SH[c[0]].replace(/"C"/g,'"'+c[1]+'"')+'</svg> ':''}
 function chips(k){return GROUPS[k].map(function(u,i){return '<label class="chip'+(u.on?' on':'')+'"><input type="checkbox" data-c="'+k+i+'"'+(u.on?' checked':'')+'> '+ico(u.n)+u.n+' <small>'+u.s+'</small></label>'}).join("")}
 var SLOTS=[
@@ -271,14 +308,15 @@ function openPop(k){
 }
 function closePop(){document.getElementById("pop").innerHTML="";popSlot=null}
 var SHOP=[{k:"u",n:"Pickaxe Head"},{k:"h",n:"Pickaxe Handle"},{k:"b",n:"Pickaxe Binding"}];
-var LV={"Copper Pickaxe Head":5,"Iron Pickaxe Head":10,"Steel Pickaxe Head":25,"Mithril Pickaxe Head":35,"Adamant Pickaxe Head":45,"Wooden Handle":5,"Oak Handle":10,"Willow Handle":25,"Maple Handle":45,"Basic Binding":10,"Wrapped Binding":25,"Looped Binding":45};
+var LV={"Copper Pickaxe Head":5,"Iron Pickaxe Head":10,"Steel Pickaxe Head":25,"Mithril Pickaxe Head":35,"Adamant Pickaxe Head":45,"Rune Pickaxe Head":55,"Dawnsteel Pickaxe Head":70,"Dragon Pickaxe Head":85,"Ironsteel Pickaxe Head Coating":50,"Wooden Pickaxe Handle":5,"Oak Pickaxe Handle":10,"Willow Pickaxe Handle":25,"Maple Pickaxe Handle":45,"Yew Pickaxe Handle":60,"Magic Pickaxe Handle":75,"Hard Oak Pickaxe Handle":85,"Redwood Pickaxe Handle":92,"Basic Pickaxe Binding":10,"Wrapped Pickaxe Binding":25,"Looped Pickaxe Binding":45,"Reinforced Pickaxe Binding":60,"Bolstered Pickaxe Binding":70,"Fortified Pickaxe Binding":85};
 var SHI={u:SI.tool,h:si('<rect x="10.5" y="1" width="3" height="22" rx="1.5" transform="rotate(45 12 12)"/>'),b:si('<path d="M12 2v20M8 7h8M8 11h8M8 15h8"/>')};
 var curShop=0;
 function secItems(sh){return GROUPS[sh.k].filter(function(u){return !sh.loc||u.loc===sh.loc})}
 function renderShop(){
+  if(!SHOP.length){document.getElementById("shop").innerHTML="";return}
   document.getElementById("shop").innerHTML='<div class="ld"><div class="ldt">'+(S.shopTitle||"Shop Upgrades")+'</div><div class="shg'+(SHOP.length>3?' g3':'')+'">'+SHOP.map(function(sh,si){
     var g=secItems(sh),top=null,c=0;g.forEach(function(u){if(u.on){top=u;c++}});
-    return '<div class="shc"><button class="sq big" data-shop="'+si+'" title="'+sh.n+'" aria-label="'+sh.n+'">'+(top?ico(top.n):SHI[sh.k])+'</button><div class="shn">'+sh.n+'</div><div class="shs">'+c+' / '+g.length+(S.free?' active':' owned')+'</div></div>';
+    return '<div class="shc"><button class="sq big" data-shop="'+si+'" title="'+sh.n+'" aria-label="'+sh.n+'">'+(top?ico(top.n):((S.shopIcons&&S.shopIcons[sh.k])||SHI[sh.k]))+'</button><div class="shn">'+sh.n+'</div><div class="shs">'+c+' / '+g.length+(S.free?' active':' owned')+'</div></div>';
   }).join("")+'</div></div>';
 }
 function shopList(sh){
@@ -322,7 +360,7 @@ function render(){
   document.getElementById("bestLbl").textContent=S.best;
   document.getElementById("legend").innerHTML=gold?S.gl:S.legend;
   if(itm)renderItemSug(ITM);
-  var list=(S.pick?S.pick(S.rocks):S.rocks).filter(function(t){return !t.lv||t.lv<=getLvl()}).map(function(t){var c=S.calc(t);if(itm&&ITM)c.ir=S.itemRate(t,c,ITM);return c});
+  var list=(S.pick?S.pick(S.rocks):S.rocks).filter(function(t){return (!t.lv||t.lv<=getLvl())&&(!t.need||EQ.some(function(e){return e.n===t.need&&e.on}))}).map(function(t){var c=S.calc(t);if(itm&&ITM)c.ir=S.itemRate(t,c,ITM);return c});
   if(itm)list=ITM?list.filter(function(r){return r.ir>0}):[];
   var d=list.sort(function(a,b){return mv(b)-mv(a)}),max=d.length?(mv(d[0])||1):1,has=d.length>0&&mv(d[0])>0;
   document.getElementById("bestName").textContent=has?d[0].n:"\u2013";
@@ -380,7 +418,9 @@ document.getElementById("tI").onclick=function(){tab="i";render()};
 document.getElementById("tM").onclick=function(){tab="m";render()};
 document.addEventListener("click",function(e){var b=e.target.closest("[data-mgoal]");if(b){MP.goal=+b.dataset.mgoal;msave();renderMMastery()}});
 var MROCK=[["Stone",250,2500],["Clay",250,2500],["Copper Ore",250,2500],["Iron Ore",250,2500],["Silver Ore",250,2500],["Coal",250,2500],["Rune Essence",250,2500],["Topaz Vein",150,1500],["Sapphire Vein",150,1500],["Mithril Ore",250,2500],["Gold Ore",250,2500],["Adamantite Ore",250,2500],["Ruby Vein",150,1500]];
-var MPAS=[{k:"lvl",n:"Mining Level",a:10,b:30},{k:"early",n:"Break any rock early (or in 1 hit)",a:500,b:5000},{k:"geo",n:"Gain Geodes from Mining",a:1,b:15},{k:"gp",n:"Create Gold Pieces worth of products",a:150000,b:750000}];
+var MPAS=[{k:"lvl",n:"Mining Level",a:10,b:30},{k:"early",n:"Break any Rock early (or in 1 hit)",a:500,b:5000},{k:"geo",n:"Gain Geodes from Mining",a:1,b:15},{k:"gp",n:"Create Gold Pieces worth of products",a:150000,b:750000}];
+function alpha(a,b){var c=function(x){return String(x).replace(/<[^>]*>/g,"").replace(/(\d),(?=\d{3})/g,"$1")};return c(a).localeCompare(c(b),undefined,{numeric:true,sensitivity:"base"})}
+function sortTrack(tr){var tb=tr.querySelector("tbody");if(!tb)return;Array.prototype.slice.call(tb.rows).sort(function(a,b){return alpha(a.cells[0].textContent,b.cells[0].textContent)}).forEach(function(r){tb.appendChild(r)})}
 var MGOAL=31,MP={};
 var MRANKS=[["Apprentice Miner",21],["Journeyman Miner",31]];
 try{MP=JSON.parse(localStorage.getItem("mv2mastery")||"{}")||{}}catch(e){MP={}}
@@ -445,13 +485,15 @@ function renderMMastery(){
   else if(P.fail)R='<div class="legend">No route found with the rocks available.</div>';
   else{
     var rp=P.steps.reduce(function(a,s){return a+s.p},0),fp=P.free.reduce(function(a,f){return a+f[2]},0);
-    var fname=function(f){return f[0]==="lvl"?"Mining Level "+f[1]:f[0]==="early"?"Break any rock early "+fmt(f[1])+" times":"Gain "+fmt(f[1])+" Geode"+(f[1]>1?"s":"")};
+    var fname=function(f){return f[0]==="lvl"?"Mining Level "+f[1]:f[0]==="early"?"Break any Rock early (or in 1 hit) "+fmt(f[1])+" times":"Gain "+fmt(f[1])+" Geode"+(f[1]>1?"s":"")+" from Mining"};
     var at=P.steps.map(function(){return[]});
     P.free.forEach(function(f){for(var i=0;i<P.steps.length;i++){var s=P.steps[i],v=f[0]==="lvl"?s.xp>=xpFor(f[1]):s[f[0]]>=f[1];if(v){at[i].push(f);return}}at[at.length-1].push(f)});
-    R='<table><thead><tr><th>#</th><th>Rock</th><th>Breaks left</th><th>Time</th><th>Running total</th><th>Level after</th><th>Completes</th></tr></thead><tbody>'+
+    var acc=st.pts;
+    R='<table><thead><tr><th>#</th><th>Rock</th><th>Breaks left</th><th>Time</th><th>Running time</th><th>Points after</th><th>Level after</th><th>Completes</th></tr></thead><tbody>'+
       P.steps.map(function(s,i){var c=s.tk.map(function(t){return esc(t.l)+' (+'+t.p+')'}).concat(at[i].map(function(f){return fname(f)+' (+'+f[2]+')'}));
-        return '<tr><td>'+(i+1)+'</td><td><span class="dot" style="background:'+COL[s.r.t]+'"></span>'+s.r.n+'</td><td>'+fmt(s.b)+'</td><td>'+mTime(s.h)+'</td><td>'+mTime(s.T)+'</td><td>'+s.L+'</td><td>'+c.join("<br>")+'</td></tr>'}).join("")+
-      '<tr><td></td><td><b>Total</b></td><td></td><td></td><td><b>'+mTime(P.T)+'</b></td><td></td><td><b>+'+(rp+fp)+' points</b>'+(st.pts?' (+ '+st.pts+' already earned)':'')+'</td></tr></tbody></table>';
+        s.tk.forEach(function(t){acc+=t.p});at[i].forEach(function(f){acc+=f[2]});
+        return '<tr><td>'+(i+1)+'</td><td><span class="dot" style="background:'+COL[s.r.t]+'"></span>'+s.r.n+'</td><td>'+fmt(s.b)+'</td><td>'+mTime(s.h)+'</td><td>'+mTime(s.T)+'</td><td>'+acc+' / '+MGOAL+'</td><td>'+s.L+'</td><td>'+c.sort(alpha).join("<br>")+'</td></tr>'}).join("")+
+      '<tr><td></td><td><b>Total</b></td><td></td><td></td><td><b>'+mTime(P.T)+'</b></td><td></td><td></td><td><b>+'+(rp+fp)+' points</b>'+(st.pts?' (+ '+st.pts+' already earned)':'')+'</td></tr></tbody></table>';
     R+='<div class="legend">Skipped: the Create Gold Pieces tasks (too slow) and any Easy task not listed.</div>';
   }
   document.getElementById("mRoute").innerHTML=R;
@@ -460,7 +502,7 @@ function renderMMastery(){
     tr.innerHTML='<table><thead><tr><th>Task</th><th>So far</th><th>Novice</th><th>Easy</th></tr></thead><tbody>'+
       MROCK.map(function(t){var c=mCells(t),k="r:"+t[0];return '<tr><td>Break '+t[0]+'</td><td><input class="mi" type="number" min="0" data-mp="'+k+'" value="'+(MP[k]||"")+'" placeholder="0" aria-label="'+t[0]+' breaks so far"></td><td id="mn-'+k.replace(/\W/g,"")+'">'+c[0]+'</td><td id="me-'+k.replace(/\W/g,"")+'">'+c[1]+'</td></tr>'}).join("")+
       MPAS.map(function(t){var c=mCells(t);return '<tr><td>'+t.n+'</td><td>'+(t.k==="lvl"?'Level '+mval("lvl"):'<input class="mi" type="number" min="0" data-mp="'+t.k+'" value="'+(MP[t.k]||"")+'" placeholder="0" aria-label="'+t.n+' so far">')+'</td><td id="mn-'+t.k+'">'+c[0]+'</td><td id="me-'+t.k+'">'+c[1]+'</td></tr>'}).join("")+'</tbody></table>';
-    tr.dataset.built="mining";
+    sortTrack(tr);tr.dataset.built="mining";
   }else{
     MROCK.forEach(function(t){var c=mCells(t),id="r"+t[0].replace(/\W/g,"");document.getElementById("mn-"+id).innerHTML=c[0];document.getElementById("me-"+id).innerHTML=c[1]});
     MPAS.forEach(function(t){var c=mCells(t);document.getElementById("mn-"+t.k).innerHTML=c[0];document.getElementById("me-"+t.k).innerHTML=c[1]});
@@ -486,14 +528,20 @@ var ICONS={"woodcutting": "iVBORw0KGgoAAAANSUhEUgAAAFgAAABYCAYAAABxlTA0AAAjGklEQ
 var WNEST0=0.24;
 var TREES=[
 {n:"Normal Tree",lv:1,t:"t",hp:3,x:3,rare:0,main:"Normal Log"},
-{n:"Oak Tree",lv:10,t:"t",hp:4,x:8,rare:0.10,main:"Oak Log",rn:"Oak Tree Seed"},
-{n:"Willow Tree",lv:25,t:"t",hp:5,x:18,rare:0.09,main:"Willow Log",rn:"Willow Tree Seed"},
-{n:"Teak Tree",lv:35,t:"t",hp:6,x:24,rare:0.09,main:"Teak Log",rn:"Teak Tree Seed"},
-{n:"Maple Tree",lv:45,t:"t",hp:8,x:38,rare:0.09,main:"Maple Log",rn:"Maple Tree Seed"},
-{n:"Mahogany Tree",lv:55,t:"t",hp:10,x:56,rare:0.09,main:"Mahogany Log",rn:"Mahogany Tree Seed"},
+{n:"Oak Tree",lv:5,t:"t",hp:4,x:8,rare:0.10,main:"Oak Log",rn:"Oak Tree Seed"},
+{n:"Willow Tree",lv:25,t:"t",hp:5,x:17,rare:0.09,main:"Willow Log",rn:"Willow Tree Seed"},
+{n:"Teak Tree",lv:35,t:"t",hp:6,x:22,rare:0.09,main:"Teak Log",rn:"Teak Tree Seed"},
+{n:"Maple Tree",lv:45,t:"t",hp:8,x:35,rare:0.09,main:"Maple Log",rn:"Maple Tree Seed"},
+{n:"Mahogany Tree",lv:55,t:"t",hp:10,x:51,rare:0.09,main:"Mahogany Log",rn:"Mahogany Tree Seed"},
 {n:"Flax Bush",lv:5,t:"b",hp:2,x:3,hit:25,main:"Flax"},
 {n:"Ambervine Bush",lv:20,t:"b",hp:2,x:4,hit:50,main:"Ambervine Leaf"},
-{n:"Spikemoss Shrub",lv:50,t:"b",hp:2,x:8,hit:75,main:"Spikemoss Leaf"}];
+{n:"Spikemoss Shrub",lv:50,t:"b",hp:2,x:8,hit:75,main:"Spikemoss Leaf"},
+{n:"Yew Tree",lv:60,t:"t",hp:14,x:83,rare:0.08,main:"Yew Log",rn:"Yew Tree Seed",nest:"Eagle Nest",nr:0.15},
+{n:"Magic Tree",lv:75,t:"t",hp:20,x:135,rare:0.08,main:"Magic Log",rn:"Magic Tree Seed",nest:"Eagle Nest",nr:0.15},
+{n:"Ashen Tree",lv:80,t:"t",hp:14,x:121,rare:0.17,main:"Ashen Log",rn:"Ashen Tree Seed",nest:"Bird Nest",nr:0.08,req:"50 Agility courses"},
+{n:"Hard Oak Tree",lv:85,t:"t",hp:22,x:146,rare:0.08,main:"Hard Oak Log",rn:"Hard Oak Tree Seed",nest:"Eagle Nest",nr:0.15},
+{n:"Redwood Tree",lv:90,t:"t",hp:26,x:168,rare:0.08,main:"Redwood Log",rn:"Redwood Tree Seed",nest:"Eagle Nest",nr:0.15,drake:0.02},
+{n:"Duskleaf Bush",lv:80,t:"b",hp:2,x:12,hit:75,sq:2,main:"Duskleaf"}];
 var WUPG=[
 {n:"Copper Axe Head",s:"+2% double damage",dd:2,on:false},
 {n:"Iron Axe Head",s:"+3% double damage",dd:3,on:false},
@@ -511,16 +559,21 @@ var WBND=[
 {n:"Looped Axe Binding",s:"+0.05% bird nest",k:0.05,on:false}];
 var WMG=[
 {n:"Apprentice Woodcutter",s:"+10% Woodcutting XP",x:10,on:false},
-{n:"Journeyman Woodcutter",s:"+10% double damage",dd:10,on:false}];
+{n:"Journeyman Woodcutter",s:"+10% double damage",dd:10,on:false},
+{n:"Skilled Woodcutter",s:"+1 base Bird Nest & Eagle Nest quantity",nq:1,on:false},
+{n:"Veteran Woodcutter",s:"+10% Woodcutting XP, -20% tree/bush max HP",x:10,hpr:20,on:false},
+{n:"Woody (pet)",s:"+0.03% on-hit item drop chance (nests)",k:0.03,on:false}];
 function wcalc(r){
-  var d=Math.min(1,Math.max(0,sum("dd")/100)),E=[0];
-  for(var h=1;h<=r.hp;h++)E[h]=1+(1-d)*E[h-1]+d*E[Math.max(h-2,0)];
-  var sw=E[r.hp],cuts=3600/sw,x=r.x*Math.max(0,1+sum("x")/100)/1.1,dm=1+(sum("d")+(r.n==="Flax Bush"?sum("dFlax"):0))/100;
-  var hit=r.t==="t"?Math.max(0,WNEST0+sum("k"))/100:r.hit/100;
-  var it=cuts*(r.t==="b"?1+sum("bq"):1)*dm,ra=cuts*(r.rare||0)/100*dm,ph=3600*hit*dm;
-  return{n:r.n,t:r.t,hp:r.hp,sw:sw,x:x,xph:cuts*x,br:cuts,it:it,ra:ra,ph:ph,
-    gph:it*(PR[r.main]||0)+ra*(PR[r.rn]||0)+ph*(PR[r.t==="t"?"Bird Nest":"Stick"]||0),
-    parts:[[r.main,it*(PR[r.main]||0)],["Tree seeds",ra*(PR[r.rn]||0)],[r.t==="t"?"Bird nests":"Sticks",ph*(PR[r.t==="t"?"Bird Nest":"Stick"]||0)]]};
+  var d=Math.min(1,Math.max(0,sum("dd")/100)),E=[0],HP=Math.max(1,Math.round(r.hp*(1-sum("hpr")/100)));
+  for(var h=1;h<=HP;h++)E[h]=1+(1-d)*E[h-1]+d*E[Math.max(h-2,0)];
+  var sw=E[HP],cuts=3600/sw,x=r.x*Math.max(0,1+sum("x")/100),dm=1+(sum("d")+(r.n==="Flax Bush"?sum("dFlax"):0))/100;
+  var nn=r.t==="t"?(r.nest||"Bird Nest"):"Stick";
+  var hit=r.t==="t"?Math.max(0,(r.nr!=null?r.nr:WNEST0)+sum("k"))/100:r.hit/100;
+  var nq=r.t==="t"?1+sum("nq"):(r.sq||1);
+  var it=cuts*(r.t==="b"?1+sum("bq"):1)*dm,ra=cuts*(r.rare||0)/100*dm,ph=3600*hit*nq*dm,dk=3600*(r.drake||0)/100*dm;
+  return{n:r.n,t:r.t,hp:HP,sw:sw,x:x,xph:cuts*x,br:cuts,it:it,ra:ra,ph:ph,dk:dk,nn:nn,
+    gph:it*(PR[r.main]||0)+ra*(PR[r.rn]||0)+ph*(PR[nn]||0)+dk*(PR["Drake Nest"]||0),
+    parts:[[r.main,it*(PR[r.main]||0)],["Tree seeds",ra*(PR[r.rn]||0)],[r.t==="t"?"Nests":"Sticks",ph*(PR[nn]||0)+dk*(PR["Drake Nest"]||0)]]};
 }
 var AXE=function(){return si('<rect x="10.5" y="2" width="2.5" height="20" rx="1"/><path d="M13 4Q21 5 21 10Q21 15 13 16Z"/>')};
 SH.k='<path d="M5 9h14l-1.5 11h-11z" fill="C"/><rect x="4" y="7" width="16" height="3" rx="1" fill="#6b4a2b"/><path d="M8 7l-1.5-4M12 7V3M16 7l1.5-4" stroke="#2bb3b3" stroke-width="1.6" fill="none"/>';
@@ -529,74 +582,105 @@ SH.a='<rect x="10.5" y="2" width="2.5" height="20" rx="1" fill="#8a6a43"/><path 
 [["Copper Axe Head","a","#b87333"],["Iron Axe Head","a","#9aa0a6"],["Steel Axe Head","a","#5d6b7a"],["Mithril Axe Head","a","#3b82f6"],["Adamant Axe Head","a","#4caf6a"],
 ["Wooden Axe Handle","s","#b58b5a"],["Oak Axe Handle","s","#8d6a3e"],["Willow Axe Handle","s","#9aa86a"],["Maple Axe Handle","s","#c9703a"],
 ["Basic Axe Binding","b","#c2a878"],["Wrapped Axe Binding","b","#8b5a3c"],["Looped Axe Binding","b","#6b7a8f"],
-["Feathers Flax Basket","k","#9a6b3f"],["Bushy Axe","a","#6f7b8a"],["Woodcutters Gloves","g","#8b6b4a"],["Apprentice Woodcutter","t","#e0a020"],["Journeyman Woodcutter","t","#a0a4aa"]].forEach(function(a){IC[a[0]]=[a[1],a[2]]});
+["Feathers Flax Basket","k","#9a6b3f"],["Bushy Axe","a","#6f7b8a"],["Woodcutters Gloves","g","#8b6b4a"],["Apprentice Woodcutter","t","#e0a020"],["Journeyman Woodcutter","t","#a0a4aa"],["Skilled Woodcutter","t","#6bbf59"],["Veteran Woodcutter","t","#b87333"],["Woody (pet)","b","#8d6a3e"]].forEach(function(a){IC[a[0]]=[a[1],a[2]]});
 var WLV={"Copper Axe Head":5,"Iron Axe Head":10,"Steel Axe Head":25,"Mithril Axe Head":35,"Adamant Axe Head":45,"Wooden Axe Handle":5,"Oak Axe Handle":10,"Willow Axe Handle":25,"Maple Axe Handle":45,"Basic Axe Binding":10,"Wrapped Axe Binding":25,"Looped Axe Binding":45};
 for(var wk in WLV)LV[wk]=WLV[wk];
 var WEQ=[{n:"Feathers Flax Basket",s:"+15% doubling (Flax Bush only)",dFlax:15,slot:"cog",on:false},
 {n:"Bushy Axe",s:"+1 primary product from Bushes",bq:1,slot:"tool",on:false},
 {n:"Woodcutters Gloves",s:"+3% double damage, +3% doubling",dd:3,d:3,slot:"gloves",on:false}];
-var WPR={"Bird Nest":28,"Stick":1,"Normal Log":3,"Oak Log":6,"Willow Log":17,"Teak Log":25,"Maple Log":33,"Mahogany Log":46,"Flax":1,"Ambervine Leaf":3,"Spikemoss Leaf":5,"Oak Tree Seed":486,"Willow Tree Seed":984,"Teak Tree Seed":1635,"Maple Tree Seed":1673,"Mahogany Tree Seed":2701};
+var WPR={"Bird Nest":28,"Stick":1,"Normal Log":3,"Oak Log":6,"Willow Log":17,"Teak Log":25,"Maple Log":33,"Mahogany Log":46,"Flax":1,"Ambervine Leaf":3,"Spikemoss Leaf":5,"Oak Tree Seed":486,"Willow Tree Seed":984,"Teak Tree Seed":1635,"Maple Tree Seed":1673,"Mahogany Tree Seed":2701,"Yew Log":73,"Magic Log":161,"Ashen Log":212,"Hard Oak Log":248,"Redwood Log":342,"Duskleaf":11,"Eagle Nest":537,"Drake Nest":7696,"Redwood Tree Seed":21026,"Yew Tree Seed":0,"Magic Tree Seed":0,"Ashen Tree Seed":0,"Hard Oak Tree Seed":0};
 COL.n="var(--gem)";COL.c="var(--ore)";COL.s="var(--tree)";COL.h="var(--bush)";
-var THLVL=1,LVLS={mining:1,woodcutting:1};
+var THLVL=1,LVLS={mining:1,woodcutting:1,herblore:30};
+try{var _hl=+localStorage.getItem("mv2hlvl");if(_hl>0)LVLS.herblore=_hl}catch(e){}
 if(MP.mlvl)LVLS.mining=+MP.mlvl;
 function getLvl(){return skill==="thieving"?THLVL:(LVLS[skill]||1)}
 function nodesText(){var u=S.rocks.filter(function(t){return !t.lv||t.lv<=getLvl()}).length;return u+" / "+S.rocks.length}
 function unlockText(){var t=0,u=0;SHOP.forEach(function(sh){secItems(sh).forEach(function(x){if(LV[x.n]){t++;if(LV[x.n]<=getLvl())u++}})});return u+" / "+t}
 function renderLvl(){
   var el=document.getElementById("lvl");if(!S){el.innerHTML="";return}
-  var info=(S.stats?'Stealth: <b id="lvlSt">'+(THLVL+sum("stl"))+'</b>':'Shop upgrades unlocked: <b id="lvlInfo">'+unlockText()+'</b>')+'<br>'+S.nodeWord+' unlocked: <b id="lvlNodes">'+nodesText()+'</b>';
+  var info=(S.stats?'Stealth: <b id="lvlSt">'+(THLVL+sum("stl"))+'</b><br>':SHOP.length?'Shop upgrades unlocked: <b id="lvlInfo">'+unlockText()+'</b><br>':'')+S.nodeWord+' unlocked: <b id="lvlNodes">'+nodesText()+'</b>';
   el.innerHTML='<div class="ld"><div class="ldt">'+S.name+' Level</div><div class="lvlbox"><input type="number" id="lvlIn" min="1" max="99" value="'+getLvl()+'" aria-label="'+S.name+' level"><div class="shs" style="margin-top:6px">'+info+'</div></div></div>';
 }
-var TPR={"Stone":2,"Clay":1,"Rune Essence":1,"Stick":1,"Normal Log":3,"Oak Log":6,"Willow Log":17,"Teak Log":25,"Maple Log":33,"Mahogany Log":46,"Bird Nest":28,"Woodcutters Gloves":2896,"Bushy Axe":57902,"Bread":5,"Silver Topaz Ring":97,"Lemon":1,"Rope":5,"Lockpick":1,"Copper Defender":15,"Leather Boots":6,"Leather Vambraces":5,"Leather Cowl":10,"Leather Chaps":20,"Leather Body":26,"Silver Bar":24,"Silver Topaz Amulet":123,"Balaclava":1203,"String":1,"Copper Gloves":29,"Beef Sandwich":104,"Copper Helmet":31,"Copper Mallet":81,"Copper Platebody":127,"Topaz":29,"Iron Mallet":132,"Thug Chief Ring":1037,"Thug Chest Key Half (a)":2765,"Hard Leather Boots":38,"Iron Dagger":23,"Uncut Topaz":20,"Hard Leather Cowl":50,"Thug Armband":16600,"Thug Chest Key Half (b)":13487,"Gold Topaz Ring":141,"Chainmail Cowl":142,"Steel Crossbow":231,"Studded Leather Shield":106,"Topaz Bolts":21,"Oak Bow":48,"Steel Arrows":7,"Bandit Gloves":5877,"Chainmail Chaps":184,"Mithril 2H Crossbow":656,"Adamant Arrows":10,"Adamant Javelin":17,"Iron Arrows":5,"Mithril Arrows":11,"Mithril Javelin":19,"Willow Bow":85,"Fletchers Vambrace":4775,"Maple Bow":145,"Eagle Nest":537,"Yew Log":73,"Copper Dagger":15,"Iron Helmet":52,"Iron Sword":48,"Mithril Defender":94,"Mithril Mallet":318,"Mithril Platebody":407,"Mithril Shield":236,"Steel 2H Sword":265,"Steel Dagger":73,"Steel Helmet":131,"Adamant 2H Sword":607,"Adamant Helmet":307,"Blacksmiths Tongs":13267,"Banana Pancake":161,"Beef":10,"Chicken Sandwich":168,"Strawberry Cake":338,"Trout Sushi":34,"Apple Pie":143,"Chef's Hat":1342,"Salmon Sushi":60,"Basic Dough":2,"Cake Base":27,"Cheese":4,"Flour":1,"Milk":1,"Raw Beef":1,"Raw Chicken":2,"Sushi Base":22,"Sweet Dough":23,"Wheat":1,"Elk Leather":141,"Leather":3,"Reinforced String":6,"Scabjaw Beast Horn":173,"Spider Silk":44,"Wolf Fur":41,"Bowstring":3,"Bucket of Sand":1,"Bucket of Water":1,"Molten Glass":2,"Pack of Vials":1,"Craftsmans Monocle":5870,"Empty Lantern":6,"Unpowered Orb":9,"Garlic":6,"Lettuce":4,"Onion":3,"Potato":2,"Corn":8,"Ranchers Chest Key Half (a)":15037,"Straw Hat":1612,"Basic Bait":1,"Raw Herring":15,"Raw Perch":26,"Raw Pike":65,"Raw Sardine":13,"Raw Shrimp":5,"Fisherman's Raincoat":3986,"Raw Lobster":80,"Raw Salmon":65,"Fire Battlestaff":349,"Silver Key (Forbidden Library)":588,"Mystic Air Wand":414,"Cursed Circlet":9736,"Earth Battlestaff":317,"Experimenter Book":24340,"Fire Battlewand":185,"Forbidden Grimoire":38944,"Mystic Earth Wand":477,"Mystic Water Staff":734,"Cowhide":8,"Feathers":4,"Grain":1,"Silk":2,"Wool":3,"Elk Antler":48,"Elk Hide":48,"Ranchers Belt":15490,"Ranchers Chest Key Half (b)":54388,"Cabbage Seed":134,"Corn Seed":16,"Garlic Seed":6,"Lettuce Seed":5,"Mantalyme Herb Seed":32,"Nomel Herb Seed":65,"Onion Seed":2,"Penril Herb Seed":10,"Potato Seed":1,"Sourweed Herb Seed":11,"Strawberry Seed":11,"Sugarcane Stalk":15,"Wheat Seed":15,"Apple Tree Seed":270,"Banana Tree Seed":162,"Cherry Tree Seed":405,"Earth Rune":1,"Fire Rune":2,"Body Rune":3,"Death Rune":2,"Runecrafters Tiara":21485,"Air Battlewand":241,"Earth Wizard Hat":67,"Fire Wizard Robes":147,"Water Battlestaff":304,"Dust Wizard Robe":301,"Mystify Wand":22111,"Decay Rune":5,"Adept Wizard Bottoms":142,"Air Staff":164,"Air Wizard Hat":67,"Water Wand":62,"Air Rune":1,"Water Rune":1,"Mind Rune":1,"Chaos Rune":2,"Lost Sibling's Wand (c)":78759,"Water Wizard Boots":72};
+var TPR={"Stone":2,"Clay":1,"Rune Essence":1,"Stick":1,"Normal Log":3,"Oak Log":6,"Willow Log":17,"Teak Log":25,"Maple Log":33,"Mahogany Log":46,"Bird Nest":28,"Woodcutters Gloves":2896,"Bushy Axe":57902,"Bread":5,"Silver Topaz Ring":97,"Lemon":1,"Rope":5,"Lockpick":1,"Copper Defender":15,"Leather Boots":6,"Leather Vambraces":5,"Leather Cowl":10,"Leather Chaps":20,"Leather Body":26,"Silver Bar":24,"Silver Topaz Amulet":123,"Balaclava":1203,"String":1,"Copper Gloves":29,"Beef Sandwich":104,"Copper Helmet":31,"Copper Mallet":81,"Copper Platebody":127,"Topaz":29,"Iron Mallet":132,"Thug Chief Ring":1037,"Thug Chest Key Half (a)":2765,"Hard Leather Boots":38,"Iron Dagger":23,"Uncut Topaz":20,"Hard Leather Cowl":50,"Thug Armband":16600,"Thug Chest Key Half (b)":13487,"Gold Topaz Ring":141,"Chainmail Cowl":142,"Steel Crossbow":231,"Studded Leather Shield":106,"Topaz Bolts":21,"Oak Bow":48,"Steel Arrows":7,"Bandit Gloves":5877,"Chainmail Chaps":184,"Mithril 2H Crossbow":656,"Adamant Arrows":10,"Adamant Javelin":17,"Iron Arrows":5,"Mithril Arrows":11,"Mithril Javelin":19,"Willow Bow":85,"Fletchers Vambrace":4775,"Maple Bow":145,"Eagle Nest":537,"Yew Log":73,"Copper Dagger":15,"Iron Helmet":52,"Iron Sword":48,"Mithril Defender":94,"Mithril Mallet":318,"Mithril Platebody":407,"Mithril Shield":236,"Steel 2H Sword":265,"Steel Dagger":73,"Steel Helmet":131,"Adamant 2H Sword":607,"Adamant Helmet":307,"Blacksmiths Tongs":13267,"Banana Pancake":161,"Beef":10,"Chicken Sandwich":168,"Strawberry Cake":338,"Trout Sushi":34,"Apple Pie":143,"Chef's Hat":1342,"Salmon Sushi":60,"Basic Dough":2,"Cake Base":27,"Cheese":4,"Flour":1,"Milk":1,"Raw Beef":1,"Raw Chicken":2,"Sushi Base":22,"Sweet Dough":23,"Wheat":1,"Elk Leather":141,"Leather":3,"Reinforced String":6,"Scabjaw Beast Horn":173,"Spider Silk":44,"Wolf Fur":41,"Bowstring":3,"Bucket of Sand":1,"Bucket of Water":1,"Molten Glass":2,"Pack of Vials":1,"Craftman's Monocle":5870,"Empty Lantern":6,"Unpowered Orb":9,"Garlic":6,"Lettuce":4,"Onion":3,"Potato":2,"Corn":8,"Ranchers Chest Key Half (a)":15037,"Straw Hat":1612,"Basic Bait":1,"Raw Herring":15,"Raw Perch":26,"Raw Pike":65,"Raw Sardine":13,"Raw Shrimp":5,"Fisherman's Raincoat":3986,"Raw Lobster":80,"Raw Salmon":65,"Fire Battlestaff":349,"Silver Key (Forbidden Library)":588,"Mystic Air Wand":414,"Cursed Circlet":9736,"Earth Battlestaff":317,"Experimenter Book":24340,"Fire Battlewand":185,"Forbidden Grimoire":38944,"Mystic Earth Wand":477,"Mystic Water Staff":734,"Cowhide":8,"Feathers":4,"Grain":1,"Silk":2,"Wool":3,"Elk Antler":48,"Elk Hide":48,"Ranchers Belt":15490,"Ranchers Chest Key Half (b)":54388,"Cabbage Seed":134,"Corn Seed":16,"Garlic Seed":6,"Lettuce Seed":5,"Mantalyme Herb Seed":32,"Nomel Herb Seed":65,"Onion Seed":2,"Penril Herb Seed":10,"Potato Seed":1,"Sourweed Herb Seed":11,"Strawberry Seed":11,"Sugarcane Stalk":15,"Wheat Seed":15,"Apple Tree Seed":270,"Banana Tree Seed":162,"Cherry Tree Seed":405,"Earth Rune":1,"Fire Rune":2,"Body Rune":3,"Death Rune":2,"Runecrafters Tiara":21485,"Air Battlewand":241,"Earth Wizard Hat":67,"Fire Wizard Robe":147,"Water Battlestaff":304,"Dust Wizard Robe":301,"Mystify Wand":22111,"Decay Rune":5,"Adept Wizard Bottoms":142,"Air Staff":164,"Air Wizard Hat":67,"Water Wand":62,"Air Rune":1,"Water Rune":1,"Mind Rune":1,"Chaos Rune":2,"Lost Sibling's Wand (c)":78759,"Water Wizard Boots":72,"Stardust":17,"Golden Stardust":1242,"Gold Bar":42,"Blackstone Powder":3,"Prized Log (c)":388591,"Thug Chest Key":37188,"Keltesta Top":39000,"Fancy Top":175394};
 var TDIS=[
-{n:"Gold Rings on a String",loc:"Lowtown District",s:"-5% target Perception",per:0.05,on:false},
-{n:"Slime Getaway",loc:"Lowtown District",s:"-5% action interval",ivl:0.05,on:false},
-{n:"Pebble Sling",loc:"Lowtown District",s:"-5% stun interval",stn:0.05,on:false},
-{n:"Bait Scattering",loc:"Seashade Port",s:"-5% stun interval",stn:0.05,on:false},
-{n:"Tangled Netting",loc:"Seashade Port",s:"+5% chance to avoid stun",avd:0.05,on:false},
+{n:"Gold Rings on a String",loc:"Lowtown District",s:"-5% target Perception",per:0.05,on:true},
+{n:"Slime Getaway",loc:"Lowtown District",s:"-5% action interval",ivl:0.05,on:true},
+{n:"Pebble Sling",loc:"Lowtown District",s:"-5% stun interval",stn:0.05,on:true},
+{n:"Mischief",loc:"Lowtown District",s:"+5% chance to avoid stun (still take damage)",avd:0.05,on:true},
+{n:"Bait Scattering",loc:"Seashade Port",s:"-5% stun interval",stn:0.05,on:true},
+{n:"Tangled Netting",loc:"Seashade Port",s:"+5% chance to avoid stun",avd:0.05,on:true},
 {n:"Rare Catch",loc:"Seashade Port",s:"-5% target Perception",per:0.05,on:false},
 {n:"Rotten Fish Panic",loc:"Seashade Port",s:"-5% action interval",ivl:0.05,on:false},
-{n:"Bee Free",loc:"Farmers Market",s:"-5% stun interval",stn:0.05,on:false},
-{n:"Stinky Fertiliser",loc:"Farmers Market",s:"+5% chance to avoid stun",avd:0.05,on:false},
-{n:"Bring the Expert",loc:"Farmers Market",s:"-5% target Perception",per:0.05,on:false},
-{n:"Peculiar Tool",loc:"Farmers Market",s:"-5% action interval",ivl:0.05,on:false},
-{n:"Flying Books",loc:"Mage Tower",s:"-5% stun interval",stn:0.05,on:false},
-{n:"Unstable Elements",loc:"Mage Tower",s:"+5% chance to avoid stun",avd:0.05,on:false},
-{n:"Fake Wizard",loc:"Mage Tower",s:"-5% target Perception",per:0.05,on:false},
+{n:"Bee Free",loc:"Farmers Market",s:"-5% stun interval",stn:0.05,on:true},
+{n:"Stinky Fertiliser",loc:"Farmers Market",s:"+5% chance to avoid stun",avd:0.05,on:true},
+{n:"Bring the Expert",loc:"Farmers Market",s:"-5% target Perception",per:0.05,on:true},
+{n:"Peculiar Tool",loc:"Farmers Market",s:"-5% action interval",ivl:0.05,on:true},
+{n:"Flying Books",loc:"Mage Tower",s:"-5% stun interval",stn:0.05,on:true},
+{n:"Unstable Elements",loc:"Mage Tower",s:"+5% chance to avoid stun",avd:0.05,on:true},
+{n:"Fake Wizard",loc:"Mage Tower",s:"-5% target Perception",per:0.05,on:true},
 {n:"Holy Distraction",loc:"Mage Tower",s:"-5% action interval",ivl:0.05,on:false},
 {n:"Silver Key (Forbidden Library)",loc:"Mage Tower",s:"-2 heist stages",stg:2,on:false},
-{n:"Small Fire",loc:"Bandit Encampment",s:"-5% stun interval",stn:0.05,on:false},
+{n:"Agility Level 50",loc:"Mage Tower",s:"-1 Forbidden Library heist stage",stg:1,on:true},
+{n:"Climbing & Jumping Level 20",loc:"Mage Tower",s:"-1 Forbidden Library heist stage (Agility)",stg:1,on:true},
+{n:"Small Fire",loc:"Bandit Encampment",s:"-5% stun interval",stn:0.05,on:true},
 {n:"Fake Arrows",loc:"Bandit Encampment",s:"+5% chance to avoid stun",avd:0.05,on:false},
-{n:"Distracting Archery",loc:"Bandit Encampment",s:"-5% action interval",ivl:0.05,on:false},
+{n:"Tainted Wine",loc:"Bandit Encampment",s:"-5% target Perception",per:0.05,on:false},
+{n:"Agility Level 60",loc:"Bandit Encampment",s:"-2 Stolen Goods heist stages",stg2:2,on:false},
+{n:"Jumping & Evading Level 24",loc:"Bandit Encampment",s:"-2 Stolen Goods heist stages (Agility)",stg2:2,on:false},
+{n:"Silver Key (Stolen Goods)",loc:"Bandit Encampment",s:"-2 Stolen Goods heist stages",stg2:2,on:false},
+{n:"Distracting Archery",loc:"Bandit Encampment",s:"-5% action interval",ivl:0.05,on:true},
 {n:"Rune Marbles",loc:"Capital Marketplace",s:"-5% stun interval",stn:0.05,on:false},
-{n:"Rare Find",loc:"Capital Marketplace",s:"-5% target Perception",per:0.05,on:false}];
-var TREQ={"Gold Rings on a String":"Unlock: buy in Shop","Slime Getaway":"Unlock: buy in Shop","Pebble Sling":"Unlock: buy in Shop",
+{n:"Rare Find",loc:"Capital Marketplace",s:"-5% target Perception",per:0.05,on:true},
+{n:"Sleight of Hand",loc:"Capital Marketplace",s:"+5% chance to avoid stun (still take damage)",avd:0.05,on:false},
+{n:"Blockade",loc:"Capital Marketplace",s:"-5% action interval",ivl:0.05,on:false},
+{n:"Baked Goods",loc:"Keltesta Mining Town",s:"-5% stun interval",stn:0.05,on:false},
+{n:"Blocked Passage",loc:"Keltesta Mining Town",s:"+5% chance to avoid stun (still take damage)",avd:0.05,on:false},
+{n:"Rare Pickaxe",loc:"Keltesta Mining Town",s:"-5% action interval",ivl:0.05,on:true},
+{n:"Sand Pitfall",loc:"Desert Palace",s:"-5% stun interval",stn:0.05,on:false},
+{n:"Rappel Getaway",loc:"Desert Palace",s:"+5% chance to avoid stun (still take damage)",avd:0.05,on:false},
+{n:"Sandstorm",loc:"Desert Palace",s:"-5% target Perception",per:0.05,on:false},
+{n:"Desert Merchant",loc:"Desert Palace",s:"-5% action interval",ivl:0.05,on:false}];
+var TREQ={"Gold Rings on a String":"Unlock: buy in Shop","Slime Getaway":"Unlock: buy in Shop","Pebble Sling":"Unlock: buy in Shop","Mischief":"Unlock: Agility Level 10",
 "Bait Scattering":"Unlock: buy in Shop","Tangled Netting":"Unlock: Attack Level 15","Rare Catch":"Unlock: find the Rusty Ancient Dagger","Rotten Fish Panic":"Unlock: buy in Shop",
 "Bee Free":"Unlock: buy in Shop","Stinky Fertiliser":"Unlock: buy in Shop","Bring the Expert":"Unlock: Firemaking Level 25","Peculiar Tool":"Unlock: find the Farmer's Scythe",
-"Flying Books":"Unlock: buy in Shop","Unstable Elements":"Unlock: buy in Shop","Fake Wizard":"Unlock: Magic Level 40","Holy Distraction":"Unlock: spend 50 Blessed Logs (Firemaking)","Silver Key (Forbidden Library)":"Unlock: find the Silver Key",
-"Small Fire":"Unlock: Firemaking Level 55","Fake Arrows":"Unlock: buy in Shop","Distracting Archery":"Unlock: Ranged Level 50","Rune Marbles":"Unlock: buy in Shop","Rare Find":"Unlock: buy in Shop"};
+"Flying Books":"Unlock: buy in Shop","Unstable Elements":"Unlock: buy in Shop","Fake Wizard":"Unlock: Magic Level 40","Holy Distraction":"Unlock: spend 50 Blessed Logs (Firemaking)","Silver Key (Forbidden Library)":"Unlock: find the Silver Key","Agility Level 50":"Unlock: Agility Level 50","Climbing & Jumping Level 20":"Unlock: Climbing and Jumping Level 20 in Agility",
+"Small Fire":"Unlock: Firemaking Level 55","Fake Arrows":"Unlock: buy in Shop","Tainted Wine":"Unlock: buy in Shop","Agility Level 60":"Unlock: Agility Level 60","Jumping & Evading Level 24":"Unlock: Jumping and Evading Level 24 in Agility","Silver Key (Stolen Goods)":"Unlock: find the Silver Key","Distracting Archery":"Unlock: Ranged Level 50","Rune Marbles":"Unlock: buy in Shop","Rare Find":"Unlock: buy in Shop","Sleight of Hand":"Unlock: Agility Level 65","Blockade":"Unlock: see game","Baked Goods":"Unlock: buy in Shop","Blocked Passage":"Unlock: Strength Level 65","Sand Pitfall":"Unlock: Hunting Level 75","Rappel Getaway":"Unlock: Agility Level 82 + Rappelling Level 25","Sandstorm":"Unlock: equip Sandstorm Ring to Thieving toolbelt","Desert Merchant":"Unlock: buy in Shop","Rare Pickaxe":"Unlock: find Stoner's Pickaxe (Damaged)"};
 TDIS.forEach(function(u){u.r=TREQ[u.n]});
 function dsum(k,loc){var t=0;TDIS.forEach(function(u){if(u.on&&u.loc===loc)t+=u[k]||0});return t}
 var LOCSEL="all";
 var TMG=[
-{n:"Apprentice Thief",s:"+10% Thieving XP",x:10,on:false},
-{n:"Journeyman Thief",s:"+60 Stealth",stl:60,on:false}];
-[["Apprentice Thief","t","#e0a020"],["Journeyman Thief","t","#a0a4aa"]].forEach(function(a){IC[a[0]]=[a[1],a[2]]});
+{n:"Apprentice Thief",s:"+10% Thieving XP",x:10,on:true},
+{n:"Journeyman Thief",s:"+60 Stealth",stl:60,on:true},
+{n:"Skilled Thief",s:"+40 Fortune (not modelled), +50% Rare Loot chance \u00b7 106 points",rare:50,on:false},
+{n:"Veteran Thief",s:"+10% Thieving XP, extra toolbelt slot",x:10,on:false},
+{n:"Clive (pet)",s:"+1% currency reward quantity",cur:1,on:false}];
+[["Apprentice Thief","t","#e0a020"],["Journeyman Thief","t","#a0a4aa"],["Skilled Thief","t","#b87333"],["Veteran Thief","t","#7a8fb8"],["Clive (pet)","b","#c9a36a"]].forEach(function(a){IC[a[0]]=[a[1],a[2]]});
 SH.d='<circle cx="12" cy="12" r="7" fill="C"/>';
-[["Gold Rings on a String","d","#e0a020"],["Slime Getaway","d","#6bbf59"],["Pebble Sling","d","#9aa0a6"],["Bait Scattering","d","#d98e6a"],["Tangled Netting","d","#8fb7a3"],["Rare Catch","d","#e0a020"],["Rotten Fish Panic","d","#6bbf59"],["Bee Free","d","#e0c040"],["Stinky Fertiliser","d","#8d6e3f"],["Bring the Expert","d","#e0a020"],["Peculiar Tool","d","#6bbf59"],["Flying Books","d","#c9a36a"],["Unstable Elements","d","#e4572e"],["Fake Wizard","d","#7c6bd6"],["Holy Distraction","d","#f0e6b8"],["Silver Key (Forbidden Library)","d","#cfd3d8"],["Small Fire","d","#e4572e"],["Fake Arrows","d","#c9a36a"],["Distracting Archery","d","#6bbf59"],["Rune Marbles","d","#7c6bd6"],["Rare Find","d","#e0a020"]].forEach(function(a){IC[a[0]]=[a[1],a[2]]});
+[["Gold Rings on a String","d","#e0a020"],["Slime Getaway","d","#6bbf59"],["Pebble Sling","d","#9aa0a6"],["Lockpick","s","#a07850"],["Thug Chest Key","s","#c9a040"],["Ivory Athenaeum Key","s","#d8d0c0"],["Fire Wizard Hat","hat","#d03a2a"],["Ivory Athenaeum Hood","hat","#7a7f88"],["Fire Wizard Robe","bod","#d03a2a"],["Keltesta Top","bod","#9aa0a6"],["Ivory Athenaeum Robe","bod","#6a7080"],["Ivory Athenaeum Bottoms","leg","#6a7080"],["Thieving Potion P1-A","pot","#e0b030"],["Cod Sushi","f","#f3e6d4"],["Sand Pitfall","d","#d9b26b"],["Rappel Getaway","d","#4aa3df"],["Sandstorm","d","#c9a36a"],["Desert Merchant","d","#e0a020"],["Baked Goods","d","#d9a45b"],["Blocked Passage","d","#7a7f88"],["Rare Pickaxe","d","#a9aeb6"],["Sleight of Hand","d","#c07ad6"],["Blockade","d","#8d6e3f"],["Tainted Wine","d","#8b2f4a"],["Agility Level 60","d","#4aa3df"],["Jumping & Evading Level 24","d","#4aa3df"],["Silver Key (Stolen Goods)","d","#c0c4cc"],["Agility Level 50","d","#4aa3df"],["Climbing & Jumping Level 20","d","#4aa3df"],["Mischief","d","#c07ad6"],["Bait Scattering","d","#d98e6a"],["Tangled Netting","d","#8fb7a3"],["Rare Catch","d","#e0a020"],["Rotten Fish Panic","d","#6bbf59"],["Bee Free","d","#e0c040"],["Stinky Fertiliser","d","#8d6e3f"],["Bring the Expert","d","#e0a020"],["Peculiar Tool","d","#6bbf59"],["Flying Books","d","#c9a36a"],["Unstable Elements","d","#e4572e"],["Fake Wizard","d","#7c6bd6"],["Holy Distraction","d","#f0e6b8"],["Silver Key (Forbidden Library)","d","#cfd3d8"],["Small Fire","d","#e4572e"],["Fake Arrows","d","#c9a36a"],["Distracting Archery","d","#6bbf59"],["Rune Marbles","d","#7c6bd6"],["Rare Find","d","#e0a020"]].forEach(function(a){IC[a[0]]=[a[1],a[2]]});
 var TEQ=[
-{n:"Thug Chief Ring",s:"+3% XP, -5% stun interval, +25 Stealth",x:3,stnE:0.05,stl:25,slot:"cog",on:false},
-{n:"Thug Armband",s:"+3% Perception, +5% coins, +15% rare loot chance",perE:0.03,cur:5,rare:15,slot:"cog",on:false},
-{n:"Bandit Gloves",s:"+30 Stealth, +3% doubling, +15% rare loot chance",stl:30,d:3,rare:15,slot:"gloves",on:false},
+{n:"Lockpick",s:"Opens locked chests (consumed: 1 per attempt)",slot:"tool",on:true},
+{n:"Thug Chest Key",s:"+500 Stealth and +50 Fortune for Locked Thug Chest only; opens it without using Lockpicks",stlC:500,key:"Locked Thug Chest",slot:"tool",on:false},
+{n:"Ivory Athenaeum Key",s:"No Thieving bonuses shown",slot:"tool",on:false},
+{n:"Fire Wizard Hat",s:"No Thieving bonuses (Fire Wizard set: Fire Magic only)",slot:"helm",on:true},
 {n:"Balaclava",s:"+15 Stealth",stl:15,slot:"helm",on:false},
+{n:"Ivory Athenaeum Hood",s:"No Thieving bonuses shown · Thieving 50",slot:"helm",on:false},
+{n:"Fire Wizard Robe",s:"No Thieving bonuses (Fire Wizard set: Fire Magic only)",slot:"body",on:true},
+{n:"Keltesta Top",s:"+40 Stealth",stl:40,slot:"body",on:false},
+{n:"Ivory Athenaeum Robe",s:"No Thieving bonuses shown · Thieving 50",slot:"body",on:false},
+{n:"Ivory Athenaeum Bottoms",s:"No Thieving bonuses shown",slot:"legs",on:false},
+{n:"Bandit Gloves",s:"+30 Stealth, +3% doubling, +15% rare loot chance",stl:30,d:3,rare:15,slot:"gloves",on:true},
+{n:"Thieving Potion P1-A",s:"+20 Stealth",stl:20,slot:"pot",on:true},
+{n:"Thug Chief Ring",s:"+3% XP, -5% stun interval, +25 Stealth",x:3,stnE:0.05,stl:25,slot:"cog",on:true},
+{n:"Thug Armband",s:"+3% Perception, +5% coins, +15% rare loot chance",perE:0.03,cur:5,rare:15,slot:"cog",on:false},
 {n:"Trout Sushi",s:"+10 Stealth \u00b7 Heals 56",stl:10,slot:"food",on:false},
-{n:"Salmon Sushi",s:"+20 Stealth \u00b7 Heals 85",stl:20,slot:"food",on:false}];
+{n:"Salmon Sushi",s:"+20 Stealth \u00b7 Heals 85",stl:20,slot:"food",on:false},
+{n:"Cod Sushi",s:"+30 Stealth",stl:30,slot:"food",on:true}];
 SH.r='<circle cx="12" cy="14" r="6" fill="none" stroke="C" stroke-width="3"/><path d="M9 5h6l-1 3h-4z" fill="#d33"/>';
 SH.w='<rect x="3" y="8" width="18" height="8" rx="3" fill="C"/><rect x="9" y="6" width="6" height="12" rx="2" fill="#5a3b22"/>';
 SH.f='<rect x="4" y="10" width="16" height="8" rx="4" fill="#f4f1ea"/><rect x="4" y="7" width="16" height="6" rx="3" fill="C"/><rect x="10" y="7" width="4" height="11" fill="#1f2a24"/>';
 SH.m='<path d="M5 5h14v11a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3z" fill="C"/><rect x="6" y="9" width="12" height="3" fill="#cfd3d8"/>';
 [["Trout Sushi","f","#e98a6b"],["Salmon Sushi","f","#f07a4a"],["Thug Chief Ring","r","#e0a020"],["Thug Armband","w","#8b5a3c"],["Bandit Gloves","g","#7a5a3c"],["Balaclava","m","#2b2f36"]].forEach(function(a){IC[a[0]]=[a[1],a[2]]});
-var LT="Lowtown District",SP="Seashade Port",FM="Farmers Market",MT="Mage Tower",BE="Bandit Encampment",CM="Capital Marketplace";
+var LT="Lowtown District",SP="Seashade Port",FM="Farmers Market",MT="Mage Tower",BE="Bandit Encampment",CM="Capital Marketplace",KM="Keltesta Mining Town",DP="Desert Palace";
 var TARGETS=[
 {n:"Citizen",lv:1,t:"n",loc:LT,P:30/.95,M:25,x:7,T:3,cp:85,ca:3,cb:12,cc:15,rr:1,
  com:[["Stone",70,1,1],["Bread",30,1,1]],
@@ -607,82 +691,116 @@ var TARGETS=[
 {n:"Thug Chief",lv:15,t:"n",loc:LT,P:114/.95,M:52,x:13,T:3,cp:80,ca:5,cb:21,cc:15,rr:1,
  com:[["Lockpick",20,1,2],["String",20,1,1],["Copper Gloves",16,1,1],["Beef Sandwich",15,1,1],["Copper Helmet",12,1,1],["Copper Mallet",10,1,1],["Copper Platebody",5,1,1],["Topaz",2,1,1]],
  rar:[["Iron Mallet",65,1,1],["Thug Chief Ring",20,1,1],["Thug Chest Key Half (a)",15,1,1]]},
-{n:"Locked Thug Chest",lv:10,t:"c",loc:LT,P:192/.95,M:45,x:39,T:8,lp:1,cp:70,ca:4,cb:16,cc:100,rr:1,
+{n:"Locked Thug Chest",lv:10,t:"c",loc:LT,P:192/.95,M:45,x:38,T:8,lp:1,cp:70,ca:4,cb:16,cc:100,rr:1,
  com:[["Rope",27.78,1,3],["Silver Bar",22.22,3,3],["Hard Leather Boots",22.22,1,1],["Iron Dagger",16.67,2,3],["Uncut Topaz",11.11,5,10]],
  rar:[["Hard Leather Cowl",40,1,1],["Thug Armband",25,1,1],["Thug Chest Key Half (b)",20,1,1],["Gold Topaz Ring",15,1,1]]},
 {n:"Craftsman",lv:17,t:"n",loc:SP,P:124,M:57,x:14,T:3,cp:70,ca:6,cb:24,cc:15,rr:1,
  com:[["Clay",18,3,5],["Bucket of Sand",17,1,8],["Bucket of Water",17,1,8],["String",10,5,10],["Bowstring",10,5,10],["Rope",10,2,5],["Molten Glass",10,2,5],["Pack of Vials",8,10,30]],
- rar:[["Unpowered Orb",42.11,15,25],["Empty Lantern",36.84,15,25],["Craftsmans Monocle",21.05,1,1]]},
-{n:"Fisherman",lv:20,t:"n",loc:SP,P:177,M:62,x:18,T:3,cp:70,ca:6,cb:28,cc:15,rr:1,
+ rar:[["Unpowered Orb",42.11,15,25],["Empty Lantern",36.84,15,25],["Craftman's Monocle",21.05,1,1]]},
+{n:"Fisherman",lv:20,t:"n",loc:SP,P:177,M:62,x:17,T:3,cp:70,ca:6,cb:28,cc:15,rr:1,
  com:[["Basic Bait",30,3,6],["Raw Shrimp",25,1,3],["Raw Sardine",20,1,1],["Raw Herring",12,1,4],["Raw Perch",8,1,5],["Raw Pike",5,1,5]],
  rar:[["Raw Salmon",45,4,12],["Raw Lobster",37.5,4,12],["Fisherman's Raincoat",17.5,1,1]]},
-{n:"Chef",lv:30,t:"n",loc:SP,P:238,M:82,x:23,T:3,cp:70,ca:8,cb:49,cc:15,rr:1,
+{n:"Chef",lv:30,t:"n",loc:SP,P:238,M:82,x:22,T:3,cp:70,ca:8,cb:49,cc:15,rr:1,
  com:[["Bread",31,1,1],["Beef",25,1,1],["Chicken Sandwich",14,1,1],["Banana Pancake",12,1,1],["Strawberry Cake",10,1,1],["Trout Sushi",8,1,1]],
  rar:[["Apple Pie",40,2,4],["Salmon Sushi",30,2,4],["Chef's Hat",30,1,1]]},
 {n:"Cooking Stall",lv:12,t:"s",loc:SP,P:60,M:37,x:10,T:6,cp:0,ca:0,cb:0,cc:100,rr:0,
  com:[["Wheat",16,1,2],["Flour",14,1,1],["Milk",13,1,1],["Bread",12,1,1],["Cheese",12,1,1],["Basic Dough",8,1,1],["Cake Base",6,1,1],["Raw Chicken",5,1,1],["Raw Beef",5,1,1],["Sweet Dough",5,1,1],["Sushi Base",4,1,1]],
  rar:[]},
-{n:"Farmer",lv:25,t:"n",loc:FM,P:175/.95,M:72,x:20,T:3,cp:70,ca:7,cb:38,cc:15,rr:1,
+{n:"Farmer",lv:25,t:"n",loc:FM,P:175/.95,M:72,x:19,T:3,cp:70,ca:7,cb:38,cc:15,rr:1,
  com:[["Potato",30,1,5],["Onion",25,1,5],["Lettuce",20,1,5],["Wheat",15,1,5],["Garlic",10,1,5]],
  rar:[["Corn",75,4,8],["Straw Hat",17.5,1,1],["Ranchers Chest Key Half (a)",7.5,1,1]]},
-{n:"Market Seed Stall",lv:35,t:"s",loc:FM,P:155/.95,M:67,x:21,T:6,cp:0,ca:0,cb:0,cc:100,rr:1,
+{n:"Herbalist",lv:38,t:"n",loc:FM,P:238/.95,M:100,x:25,T:3,cp:70,ca:10,cb:72,cc:15,rr:1,
+ com:[["Pack of Vials",26,10,20],["Penril Herb Seed",12,1,3],["Sourweed Herb Seed",11,1,3],["Mantalyme Herb Seed",10,1,3],["Nomel Herb Seed",9,1,3],["Oxilyme Herb Seed",8,1,3],["Woodcutting Potion P1-A",6,10,10],["Fishing Potion P1-A",6,10,10],["Mining Potion P1-A",6,10,10],["Woodcutting Potion P2-A",2,10,10],["Fishing Potion P2-A",2,10,10],["Mining Potion P2-A",2,10,10]],
+ rar:[["Sporlyle Herb Seed",94,1,4],["Mortar and Pestle",6,1,1]]},
+{n:"Market Seed Stall",lv:35,t:"s",loc:FM,P:155/.95,M:67,x:20,T:6,cp:0,ca:0,cb:0,cc:100,rr:1,
  com:[["Potato Seed",25.74,1,1],["Onion Seed",20.14,1,1],["Lettuce Seed",15.76,1,1],["Wheat Seed",12.26,1,1],["Garlic Seed",12.26,1,1],["Strawberry Seed",5.25,1,1],["Cabbage Seed",2.63,1,1],["Sugarcane Stalk",2.63,1,1],["Corn Seed",1.75,1,1],["Penril Herb Seed",0.70,1,1],["Sourweed Herb Seed",0.44,1,1],["Mantalyme Herb Seed",0.26,1,1],["Nomel Herb Seed",0.18,1,1]],
  rar:[["Banana Tree Seed",44.44,1,1],["Apple Tree Seed",33.33,1,1],["Cherry Tree Seed",22.22,1,1]]},
-{n:"Locked Ranchers Chest",lv:33,t:"c",loc:FM,P:456/.95,M:97,x:76,T:8,lp:1,cp:70,ca:9,cb:57,cc:100,rr:1,
+{n:"Locked Ranchers Chest",lv:33,t:"c",loc:FM,P:456/.95,M:97,x:74,T:8,lp:1,cp:70,ca:9,cb:57,cc:100,rr:1,
  com:[["Feathers",30,5,10],["Cowhide",25,1,2],["Wool",20,1,3],["Grain",20,5,10],["Silk",5,5,10]],
  rar:[["Elk Hide",45,3,6],["Elk Antler",30,10,20],["Ranchers Belt",15,1,1],["Ranchers Chest Key Half (b)",10,1,1]]},
-{n:"Wizard Scholar",lv:28,t:"n",loc:MT,P:179/.95,M:80,x:21,T:3,cp:70,ca:8,cb:44,cc:15,rr:1,
+{n:"Wizard Scholar",lv:28,t:"n",loc:MT,P:179/.95,M:80,x:20,T:3,cp:70,ca:8,cb:44,cc:15,rr:1,
  com:[["Air Rune",24,5,10],["Water Rune",24,5,10],["Mind Rune",15,5,10],["Air Staff",10,1,1],["Chaos Rune",10,5,10],["Air Wizard Hat",10,1,1],["Water Wand",5,1,1],["Adept Wizard Bottoms",2,1,1]],
  rar:[["Water Wizard Boots",50,1,1],["Air Rune",24.5,25,100],["Water Rune",24.5,25,100],["Lost Sibling's Wand (c)",1,1,1]]},
-{n:"Runecrafter",lv:47,t:"n",loc:MT,P:339/.95,M:117,x:36,T:3,cp:70,ca:12,cb:103,cc:15,rr:1,
+{n:"Astrologer",lv:36,t:"n",loc:MT,P:235/.95,M:95,x:25,T:3,cp:70,ca:10,cb:66,cc:15,rr:1,
+ com:[["Stardust",30,3,6],["Earth Rune",25,6,12],["Fire Rune",25,6,12],["Magic Dust",15,1,1],["Moonlight Minnow",5,1,3]],
+ rar:[["Astral Rune",75,15,25],["Golden Stardust",20,1,2],["Astrolabe",5,1,1]]},
+{n:"Runecrafter",lv:47,t:"n",loc:MT,P:339/.95,M:117,x:35,T:3,cp:70,ca:12,cb:103,cc:15,rr:1,
  com:[["Rune Essence",20,10,20],["Earth Rune",16,8,12],["Fire Rune",16,8,12],["Mind Rune",14,8,12],["Chaos Rune",13,5,10],["Body Rune",13,5,10],["Death Rune",8,5,10]],
  rar:[["Air Rune",26.04,10,30],["Water Rune",26.04,10,30],["Earth Rune",22.4,10,30],["Fire Rune",22.4,10,30],["Runecrafters Tiara",3.12,1,1]]},
-{n:"Wizard",lv:53,t:"n",loc:MT,P:435/.95,M:156,x:43,T:3,cp:70,ca:13,cb:129,cc:15,rr:1,
- com:[["Chaos Rune",40,3,6],["Body Rune",30,3,6],["Death Rune",26,3,6],["Air Battlewand",1,1,1],["Water Battlestaff",1,1,1],["Earth Wizard Hat",1,1,1],["Fire Wizard Robes",1,1,1]],
+{n:"Wizard",lv:53,t:"n",loc:MT,P:435/.95,M:156,x:42,T:3,cp:70,ca:13,cb:129,cc:15,rr:1,
+ com:[["Chaos Rune",40,3,6],["Body Rune",30,3,6],["Death Rune",26,3,6],["Air Battlewand",1,1,1],["Water Battlestaff",1,1,1],["Earth Wizard Hat",1,1,1],["Fire Wizard Robe",1,1,1]],
  rar:[["Dust Wizard Robe",50,1,1],["Decay Rune",48.5,20,40],["Mystify Wand",1.5,1,1]]},
-{n:"Forbidden Library",lv:50,t:"h",loc:MT,P:1349/.95,M:177,x:1249,T:4,st:10,cp:100,ca:29,cb:173,cc:100,rr:0,
+{n:"Forbidden Library",lv:50,t:"h",loc:MT,P:1349/.95,M:177,x:1213,T:4,st:10,cp:100,ca:29,cb:173,cc:100,rr:0,
  com:[["Air Rune",15,5,10],["Water Rune",15,5,10],["Earth Rune",15,5,10],["Fire Rune",15,5,10],["Body Rune",11.7,5,10],["Chaos Rune",11.6,5,10],["Death Rune",9,5,10],["Decay Rune",7,5,10],["Silver Key (Forbidden Library)",0.3,1,1],["Fire Battlestaff",0.2,1,1],["Mystic Air Wand",0.2,1,1]],
  rar:[],
- fin:[["Fire Battlewand",43.1,1,1],["Earth Battlestaff",43.1,1,1],["Cursed Circlet",4.31,1,1],["Mystic Air Wand",2.16,1,1],["Mystic Water Staff",2.16,1,1],["Mystic Earth Wand",2.16,1,1],["Experimenter Book",1.72,1,1],["Forbidden Grimoire",1.29,1,1]]},
-{n:"Bandit",lv:33,t:"n",loc:BE,P:243,M:90,x:23,T:3,cp:70,ca:9,cb:57,cc:15,rr:1,
- com:[["Steel Arrows",31.91,4,8],["Topaz Bolts",17.02,2,4],["Oak Bow",14.89,1,1],["Studded Leather Shield",12.77,1,1],["Lockpick",12.77,3,6],["Chainmail Cowl",6.38,1,1],["Steel Crossbow",4.26,1,1]],
+ fin:[["Fire Battlewand",42.19,1,1],["Earth Battlestaff",42.19,1,1],["Cursed Circlet",4.22,1,1],["Mystic Air Wand",2.11,1,1],["Mystic Water Staff",2.11,1,1],["Mystic Earth Wand",2.11,1,1],["Mystic Fire Staff",2.11,1,1],["Experimenter Book",1.69,1,1],["Forbidden Grimoire",1.27,1,1]]},
+{n:"Bandit",lv:33,t:"n",loc:BE,P:243,M:90,x:22,T:3,cp:70,ca:9,cb:57,cc:15,rr:1,
+ com:[["Steel Arrows",30,4,8],["Topaz Bolts",16,2,4],["Oak Bow",14,1,1],["Studded Leather Shield",12,1,1],["Lockpick",12,3,6],["Chainmail Cowl",6,1,1],["Salmon Soup",6,1,1],["Steel Crossbow",4,1,1]],
  rar:[["Mithril 2H Crossbow",50,1,1],["Chainmail Chaps",42.5,1,1],["Bandit Gloves",7.5,1,1]]},
-{n:"Bandit Fletcher",lv:42,t:"n",loc:BE,P:349,M:107,x:31,T:3,cp:70,ca:11,cb:85,cc:15,rr:1,
+{n:"Bandit Fletcher",lv:42,t:"n",loc:BE,P:349,M:107,x:30,T:3,cp:70,ca:11,cb:85,cc:15,rr:1,
  com:[["Oak Bow",25,1,1],["Iron Arrows",20,5,10],["Steel Arrows",15,5,10],["Mithril Arrows",10,5,10],["Willow Bow",10,1,1],["Mithril Javelin",10,4,8],["Adamant Arrows",5,5,10],["Adamant Javelin",5,3,5]],
  rar:[["Maple Bow",93.75,1,1],["Fletchers Vambrace",6.25,1,1]]},
-{n:"Bandit Woodcutter",lv:50,t:"n",loc:BE,P:454,M:147,x:42,T:3,cp:70,ca:12,cb:115,cc:15,rr:1,
+{n:"Bandit Woodcutter",lv:50,t:"n",loc:BE,P:454,M:147,x:41,T:3,cp:70,ca:12,cb:115,cc:15,rr:1,
  com:[["Stick",30,5,10],["Normal Log",28,3,5],["Oak Log",20,3,5],["Willow Log",8,3,5],["Teak Log",6,3,5],["Maple Log",5,3,5],["Mahogany Log",3,3,5]],
  rar:[["Yew Log",54.5,10,15],["Bird Nest",27,1,5],["Woodcutters Gloves",10,1,1],["Eagle Nest",6,1,5],["Bushy Axe",2.5,1,1]]},
-{n:"Blacksmith",lv:53,t:"n",loc:CM,P:435/.95,M:156,x:43,T:3,cp:70,ca:13,cb:129,cc:15,rr:1,
+{n:"Bandit Leader",lv:57,t:"n",loc:BE,P:465,M:165,x:47,T:3,cp:70,ca:14,cb:146,cc:15,rr:1,
+ com:[["Steel Arrows",23.23,3,6],["Mithril Arrows",18.18,3,6],["Adamant Arrows",16.16,3,6],["Rune Arrows",12.12,3,6],["Lockpick",12.12,4,12],["Willow Bow",6.06,1,1],["Maple Bow",4.04,1,1],["Hard Leather Chaps",3.03,1,1],["Yew Bow",2.02,1,1],["Chainmail Body",2.02,1,1],["Hard Elk Leather Vambraces",1.01,1,1]],
+ rar:[["Hard Elk Leather Boots",58,1,1],["Studded Elk Leather Vambraces",40,1,1],["Bandit Bow",2,1,1]]},
+{n:"Stolen Goods",lv:60,t:"h",loc:BE,P:1870,M:207,x:2515,T:4,st:15,sk:"bg",cp:100,ca:34,cb:242,cc:100,rr:0,
+ com:[["Topaz Bolts",10.89,1,3],["Iron Arrows",9.99,2,4],["Iron Javelin",9.99,1,3],["Lockpick",8.99,6,18],["Sapphire Bolts",7.99,1,4],["Steel Arrows",7.99,2,4],["Steel Javelin",7.99,1,3],["Mithril Javelin",6.99,1,3],["Ruby Bolts",5.99,1,4],["Mithril Arrows",5.99,2,4],["Elk Leather Vambraces",5.99,1,1],["Elk Leather Boots",4,1,1],["Elk Leather Cowl",3,1,1],["Elk Leather Shield",2,1,1],["Elk Leather Chaps",1,1,1],["Elk Leather Body",1,1,1],["Silver Key (Stolen Goods)",0.2,1,1]],
+ rar:[],
+ fin:[["Hard Elk Leather Vambraces",16,1,1],["Hard Elk Leather Boots",12.6,1,1],["Hard Elk Leather Cowl",10,1,1],["Hard Elk Leather Shield",8,1,1],["Emerald Bolts",8,5,15],["Adamant Arrows",8,10,20],["Adamant Javelin",8,5,10],["Hard Elk Leather Chaps",6,1,1],["Diamond Bolts",6,5,15],["Rune Arrows",6,10,20],["Rune Javelin",6,5,10],["Hard Elk Leather Body",4,1,1],["Gold Quiver",1,1,1],["Reslinger 2H Crossbow",0.4,1,1]]},
+{n:"Blacksmith",lv:53,t:"n",loc:CM,P:435/.95,M:156,x:42,T:3,cp:70,ca:13,cb:129,cc:15,rr:1,
  com:[["Copper Dagger",30,1,1],["Copper Helmet",20,1,1],["Iron Sword",13,1,1],["Iron Helmet",13,1,1],["Steel Dagger",8,1,1],["Steel Helmet",5,1,1],["Steel 2H Sword",3,1,1],["Mithril Defender",3,1,1],["Mithril Shield",3,1,1],["Mithril Mallet",1,1,1],["Mithril Platebody",1,1,1]],
  rar:[["Adamant 2H Sword",60,1,1],["Adamant Helmet",37.5,1,1],["Blacksmiths Tongs",2.5,1,1]]},
-{n:"Crafting Stall",lv:55,t:"s",loc:CM,P:322/.95,M:111,x:40,T:6,cp:0,ca:0,cb:0,cc:100,rr:0,
+{n:"Crafting Stall",lv:55,t:"s",loc:CM,P:322/.95,M:111,x:39,T:6,cp:0,ca:0,cb:0,cc:100,rr:0,
  com:[["Leather",18,1,2],["String",18,3,6],["Wool",17,1,3],["Silk",15,1,2],["Spider Silk",10,1,3],["Reinforced String",8,5,10],["Wolf Fur",6,3,5],["Elk Leather",5,1,1],["Scabjaw Beast Horn",3,1,1]],
- rar:[]}];
+ rar:[]},
+{n:"Capital Citizen",lv:65,t:"n",loc:CM,P:570/.95,M:183,x:61,T:3,cp:70,ca:15,cb:187,cc:15,rr:1,
+ com:[["Silver Bar",30,1,1],["Bread",30,1,1],["Silver Topaz Ring",12.5,1,1],["Beef Sandwich",8,1,1],["Silver Topaz Amulet",7.5,1,1],["Chicken Sandwich",5,1,1],["Silver Sapphire Ring",4,1,1],["Gold Ruby Amulet",3,1,1]],
+ rar:[["Silver Emerald Ring",60,1,1],["Silver Diamond Ring",37.2,1,1],["Commoner Shoes",2,1,1],["Bank Chest Key Half (a)",0.8,1,1]]},
+{n:"Capital Seed Stall",lv:70,t:"s",loc:CM,P:553/.95,M:132,x:57,T:6,cp:0,ca:0,cb:0,cc:100,rr:1,
+ com:[["Corn Seed",14,1,1],["Watermelon Seed",13,1,1],["Snape Grass Seed",11,1,1],["Tomato Seed",9,1,1],["Carrot Seed",9,1,1],["Pumpkin Seed",7,1,1],["Black Grape Seed",7,1,1],["Cabbage Seed",6,1,1],["Cauliflower Seed",6,1,1],["Nomel Herb Seed",5,1,1],["Oxilyme Herb Seed",5,1,1],["Sporlyle Herb Seed",3,1,1],["Larx Herb Seed",3,1,1],["Barrentoe Herb Seed",2,1,1]],
+ rar:[["Peach Tree Seed",45,1,1],["Orange Tree Seed",35,1,1],["Mango Tree Seed",20,1,1]]},
+{n:"Locked Bank Chest",lv:63,t:"c",loc:CM,P:1184/.95,M:198,x:187,T:8,lp:1,cp:70,ca:15,cb:177,cc:100,rr:1,
+ com:[["Topaz",38.89,1,5],["Sapphire",33.33,1,5],["Silver Bar",16.67,5,15],["Gold Bar",11.11,1,5]],
+ rar:[["Diamond",90,4,8],["Jewelled Necklace",5,1,1],["Bank Chest Key Half (b)",3,1,1],["Bank Box",2,1,1]]},
+{n:"Miner",lv:61,t:"n",loc:KM,P:594,M:174,x:54,T:3,cp:70,ca:15,cb:166,cc:15,rr:1,
+ com:[["Stone",30,5,10],["Copper Ore",22,5,10],["Iron Ore",18,5,10],["Coal",15,5,10],["Mithril Ore",10,5,10],["Adamantite Ore",5,5,10]],
+ rar:[["Runite Ore",50,5,10],["Dawnsteel Ore",46.5,5,10],["Miners Helmet",2.5,1,1],["Miners Boots",1,1,1]]},
+{n:"Stone Mason",lv:66,t:"n",loc:KM,P:602,M:186,x:62,T:3,cp:70,ca:16,cb:193,cc:15,rr:1,
+ com:[["Stone",32,5,15],["Clay",25,2,4],["Blackstone",15,2,4],["Blackstone Powder",12,15,30],["Mining Potion P2-A",8,5,10],["Smithing Potion P1-A",8,5,10]],
+ rar:[["Uncut Emerald",50.75,5,8],["Geode",39.96,1,1],["Stone",8.99,150,150],["Prized Stone (c)",0.3,1,1]]},
+{n:"Carpenter",lv:72,t:"n",loc:KM,P:765,M:201,x:47,T:3,cp:70,ca:17,cb:227,cc:15,rr:1,
+ com:[["Normal Log",29,1,5],["Teak Log",24,1,5],["Mahogany Log",18,1,5],["Woodcutting Potion P1-A",8,5,10],["Crafting Potion P1-A",8,5,10],["Fletching Potion P1-A",8,5,10],["Magic Log",5,1,5]],
+ rar:[["Hard Oak Log",50.75,2,8],["Redwood Log",32.47,2,8],["Blessed Log",13.99,2,3],["Keltesta Top",2.5,1,1],["Prized Log (c)",0.3,1,1]]},
+{n:"Palace Citizen",lv:80,t:"n",loc:DP,P:946,M:255,x:53,T:3,cp:70,ca:18,cb:278,cc:15,rr:1,
+ com:[["Gold Bar",50.51,1,1],["Gold Topaz Ring",9.09,1,1],["Gold Topaz Amulet",8.08,1,1],["Gold Ruby Ring",7.07,1,1],["Gold Ruby Amulet",7.07,1,1],["Pumpkin Pie",7.07,1,1],["Gold Emerald Ring",6.06,1,1],["Gold Emerald Amulet",5.05,1,1]],
+ rar:[["Gold Diamond Ring",54,1,1],["Gold Diamond Amulet",45.5,1,1],["Fancy Top",0.5,1,1]]}];
 function tgold(tbl){var g=0,n=0;tbl.forEach(function(it){var q=(it[2]+it[3])/2;g+=it[1]/100*q*(TPR[it[0]]||0);n+=it[1]/100*q});return[g,n]}
 function tcalc(r){
   var d=function(k){return dsum(k,r.loc)};
-  var P=r.P*Math.max(0,1-d("per")+sum("perE")),T=r.T*(1-d("ivl")),stun=2*Math.max(0,1-d("stn")-sum("stnE"))*(1-d("avd"));
-  var xx=r.x*(1+sum("x")/100)/1.03,sc=Math.min(1,(THLVL+sum("stl")+100)/(P+100)),cyc=T+(1-sc)*stun,att=3600/cyc,succ=att*sc;
+  var P=r.P*Math.max(0,1-d("per")+sum("perE")),T=r.T*(1-d("ivl")),stun=2*Math.max(0,1-d("stn")-sum("stnE"))*(1-d("avd"))*Math.max(0,1-sum("avdG")/100);
+  var kt=EQ.some(function(e){return e.on&&e.key===r.n});var xx=r.x*(1+sum("x")/100),sc=Math.min(1,(THLVL+sum("stl")+(kt?sum("stlC"):0)+100)/(P+100)),cyc=T+(1-sc)*stun,att=3600/cyc,succ=att*sc;
   var dm=1+sum("d")/100,cur=1+sum("cur")/100,rm=1+sum("rare")/100;
   var cg=tgold(r.com),rg=tgold(r.rar||[]);
   var coins=succ*r.cp/100*(r.ca+r.cb)/2*cur,gc=succ*r.cc/100*cg[0]*dm,gr=succ*r.rr/100*rm*rg[0]*dm;
   var items=succ*(r.cc/100*cg[1]+r.rr/100*rm*rg[1])*dm,hph=0,xph=succ*xx;
-  if(r.st){var St=Math.max(1,r.st-d("stg")),fg=tgold(r.fin);hph=succ/St;xph=hph*xx;gr+=hph*fg[0]*dm;items+=hph*fg[1]*dm}
+  if(r.st){var St=Math.max(1,r.st-d(r.sk==="bg"?"stg2":"stg")),fg=tgold(r.fin);hph=succ/St;xph=hph*xx;gr+=hph*fg[0]*dm;items+=hph*fg[1]*dm}
   return{n:r.n,t:r.t,loc:r.loc,sc:sc,cyc:cyc,x:xx,att:att,hph:hph,xph:xph,hp:att*(1-sc)*(1+r.M)/2,coins:coins,
-    items:items,lpn:att*(r.lp||0),gph:coins+gc+gr-att*(r.lp||0)*(TPR.Lockpick||0),
+    items:items,lpn:kt?0:att*(r.lp||0),gph:coins+gc+gr-(kt?0:att*(r.lp||0)*(TPR.Lockpick||0)),
     parts:[["Coins",coins],["Common items",gc],["Rare items",gr]]};
 }
 function esc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;")}
-document.addEventListener("input",function(e){if(e.target.id==="lvlIn"){var v=parseInt(e.target.value,10);v=isNaN(v)?1:Math.min(99,Math.max(1,v));if(skill==="thieving")THLVL=v;else LVLS[skill]=v;if(skill==="mining"&&typeof MP==="object"){MP.mlvl=v;msave()}if(skill==="thieving"&&typeof TMP==="object"){TMP.lvl=v;tsave()}if(skill==="woodcutting"&&typeof WMP==="object"){WMP.lvl=v;wsave()}render();if(!S.free&&document.getElementById("pl")&&curShop>=0)document.getElementById("pl").innerHTML=shopList(SHOP[curShop])}});
+document.addEventListener("input",function(e){if(e.target.id==="lvlIn"){var v=parseInt(e.target.value,10);v=isNaN(v)?1:Math.min(99,Math.max(1,v));if(skill==="thieving")THLVL=v;else LVLS[skill]=v;if(skill==="mining"&&typeof MP==="object"){MP.mlvl=v;msave()}if(skill==="thieving"&&typeof TMP==="object"){TMP.lvl=v;tsave()}if(skill==="woodcutting"&&typeof WMP==="object"){WMP.lvl=v;wsave()}if(skill==="herblore"){try{localStorage.setItem("mv2hlvl",v)}catch(e){}}render();if(!S.free&&document.getElementById("pl")&&curShop>=0)document.getElementById("pl").innerHTML=shopList(SHOP[curShop])}});
 var ITEMQ="";
 function srtN(o){return Object.keys(o).sort(function(a,b){return a.localeCompare(b)})}
 var TNAMES=(function(){var o={Coins:1};TARGETS.forEach(function(t){t.com.concat(t.rar||[],t.fin||[]).forEach(function(i){o[i[0]]=1})});return srtN(o)})();
 var MNAMES=(function(){var o={Geode:1};ROCKS.forEach(function(r){o[itemOf(r.n)]=1});return srtN(o)})();
-var WNAMES=(function(){var o={"Bird Nest":1,"Stick":1};TREES.forEach(function(t){o[t.main]=1;if(t.rn)o[t.rn]=1});return srtN(o)})();
+var WNAMES=(function(){var o={"Bird Nest":1,"Eagle Nest":1,"Drake Nest":1,"Stick":1};TREES.forEach(function(t){o[t.main]=1;if(t.rn)o[t.rn]=1});return srtN(o)})();
 var ITEMNAMES=TNAMES,ITEMQS={};
 function mitemRate(r,c,name){var v=0;if(itemOf(r.n)===name)v+=c.it;if(name==="Geode")v+=c.ge;if(name==="Stone")v+=c.sto;return v}
-function witemRate(r,c,name){var v=0;if(r.main===name)v+=c.it;if(r.rn&&r.rn===name)v+=c.ra;if(name===(r.t==="t"?"Bird Nest":"Stick"))v+=c.ph;return v}
+function witemRate(r,c,name){var v=0;if(r.main===name)v+=c.it;if(r.rn&&r.rn===name)v+=c.ra;if(name===c.nn)v+=c.ph;if(name==="Drake Nest")v+=c.dk||0;return v}
 function fmtS(n){return n>=100?fmt(n):n>=10?n.toFixed(1):n>=1?n.toFixed(2):n>0?n.toPrecision(2):"0"}
 function timePer(ir){if(!(ir>0))return "\u2013";var sc=3600/ir;return sc<90?Math.round(sc)+" s":sc<5400?(sc/60).toFixed(1)+" min":sc<172800?(sc/3600).toFixed(1)+" h":(sc/86400).toFixed(1)+" days"}
 function selItem(q){q=(q||"").trim().toLowerCase();if(!q)return "";var ex=ITEMNAMES.filter(function(n){return n.toLowerCase()===q});if(ex.length)return ex[0];var m=ITEMNAMES.filter(function(n){return n.toLowerCase().indexOf(q)>=0});return m.length===1?m[0]:""}
@@ -703,11 +821,71 @@ function titemRate(r,c,name){
 function fillItems(){document.getElementById("itemList").innerHTML=ITEMNAMES.map(function(n){return '<option value="'+esc(n)+'">'}).join("")}
 document.addEventListener("input",function(e){if(e.target.id==="itemIn"){ITEMQ=ITEMQS[skill]=e.target.value;render()}});
 document.addEventListener("click",function(e){var b=e.target.closest("[data-pick]");if(b){ITEMQ=ITEMQS[skill]=b.dataset.pick;document.getElementById("itemIn").value=ITEMQ;render()}});
+var HRECIPES=[
+{n:"Woodcutting Potion P1-A",t:"o",x:3,v:1,out:15,pr:4.32,ht:13.5,st:5.5,inp:[["Pack of Vials",1],["Penril Herb",1],["Stick",1]]},
+{n:"Woodcutting Potion P2-A",lv:30,t:"o",x:9,v:1,out:20,pr:4.32,ht:13.5,st:5.5,inp:[["Pack of Vials",1],["Penril Herb",1],["Stick",2],["Attuned Essence",1]]},
+{n:"Woodcutting Potion P2-B",lv:30,t:"t",x:9,v:1,out:20,pr:4.32,ht:13.5,st:5.5,inp:[["Pack of Vials",1],["Mantalyme Herb",1],["Ambervine Leaf",2],["Attuned Essence",1]]},
+{n:"Fishing Potion P1-A",t:"o",x:7,v:3,out:3,pr:10.08,ht:31.5,st:19.5,inp:[["Pack of Vials",1],["Penril Herb",1],["Seaweed",1]]},
+{n:"Fishing Potion P2-A",lv:30,t:"o",x:30,v:9,out:4,pr:10.08,ht:31.5,st:19.5,inp:[["Pack of Vials",1],["Penril Herb",1],["Seaweed",2],["Attuned Essence",1]]},
+{n:"Fishing Potion P2-B",lv:30,t:"t",x:30,v:10,out:4,pr:10.08,ht:31.5,st:19.5,inp:[["Pack of Vials",1],["Mantalyme Herb",1],["Raw Mackerel",3],["Attuned Essence",1]]},
+{n:"Mining Potion P1-A",t:"o",x:3,v:1,out:10,pr:4.32,ht:13.5,st:5.5,inp:[["Pack of Vials",1],["Penril Herb",1],["Clay",1]]},
+{n:"Mining Potion P2-A",lv:30,t:"o",x:10,v:2,out:12,pr:4.32,ht:13.5,st:5.5,inp:[["Pack of Vials",1],["Penril Herb",1],["Clay",2],["Attuned Essence",1]]},
+{n:"Mining Potion P2-B",lv:30,t:"t",x:10,v:2,out:12,pr:4.32,ht:13.5,st:5.5,inp:[["Pack of Vials",1],["Mantalyme Herb",1],["Silver Ore",2],["Attuned Essence",1]]},
+{n:"Firemaking Potion P1-A",lv:15,t:"o",x:13,v:11,out:2,pr:12.96,ht:40.5,st:26.5,inp:[["Pack of Vials",1],["Penril Herb",1],["Ash",2]]},
+{n:"Cooking Potion P1-A",lv:15,t:"o",x:7,v:2,out:12,pr:7.2,ht:22.5,st:12.5,inp:[["Pack of Vials",1],["Penril Herb",1],["Beef",1]]},
+{n:"Smithing Potion P1-A",lv:15,t:"e",x:6,v:2,out:10,pr:5.76,ht:18,st:9,inp:[["Pack of Vials",1],["Sourweed Herb",1],["Coal",1]]},
+{n:"Crafting Potion P1-A",lv:15,t:"e",x:5,v:2,out:10,pr:5.76,ht:18,st:9,inp:[["Pack of Vials",1],["Sourweed Herb",1],["String",1]]},
+{n:"Fletching Potion P1-A",lv:15,t:"e",x:5,v:2,out:10,pr:5.76,ht:18,st:9,inp:[["Pack of Vials",1],["Sourweed Herb",1],["Iron Arrows",1]]},
+{n:"Runecrafting Potion P1-A",lv:15,t:"e",x:7,v:2,out:10,pr:5.76,ht:18,st:9,inp:[["Pack of Vials",1],["Sourweed Herb",1],["Mind Rune",1]]},
+{n:"Hunting Potion P1-A",lv:15,t:"e",x:17,v:54,out:1,pr:17.28,ht:54,st:37,inp:[["Pack of Vials",1],["Sourweed Herb",1],["Rabbit Fur",1]]},
+{n:"Farming Potion P1-A",lv:15,t:"e",x:16,v:34,out:1,pr:21.6,ht:67.5,st:47.5,inp:[["Pack of Vials",1],["Sourweed Herb",1],["Lettuce",2]]},
+{n:"Ranching Potion P1-A",lv:15,t:"e",x:8,v:5,out:6,pr:7.92,ht:24.75,st:14.25,inp:[["Pack of Vials",1],["Sourweed Herb",1],["Beeswax",4]]},
+{n:"Herblore Potion P1-A",lv:15,t:"e",x:7,v:3,out:5,pr:7.2,ht:22.5,st:12.5,inp:[["Pack of Vials",1],["Sourweed Herb",1],["Penril Herb",1]]},
+{n:"Astrology Potion P1-A",lv:15,t:"g",x:7,v:3,out:8,pr:4.8,ht:27,st:10,inp:[["Pack of Vials",1],["Nomel Herb",1],["Stardust",1]]}];
+var HPR={"Pack of Vials":1,"Penril Herb":5,"Seaweed":2,"Stick":1,"Clay":1,"Ash":3,"Beef":10,"Coal":5,"String":1,"Iron Arrows":5,"Mind Rune":1,"Rabbit Fur":39,"Lettuce":4,"Beeswax":1,"Sourweed Herb":7,"Nomel Herb":9,"Stardust":17,"Attuned Essence":1,"Mantalyme Herb":9,"Ambervine Leaf":3,"Raw Mackerel":16,"Silver Ore":10};
+HRECIPES.forEach(function(r){HPR[r.n]=r.v;r.ht=r.ht/0.9;r.pr=r.pr/0.96});
+var HPRLIST=Object.keys(HPR).sort(function(a,b){return a.localeCompare(b)});
+var HSUP="Super Potions only (no effect on these recipes)";
+var HPREP=[{n:"Preparation I",s:"+2% Input Preservation chance (Skilling Potions)",hpres:2,on:true},{n:"Preparation II",s:"+5% Input Preservation chance (Skilling Potions)",hpres:5,on:false},{n:"Preparation III",s:"+5% Input Preservation chance in Herblore",hpres:5,on:false},{n:"Preparation IV",s:HSUP,on:false},{n:"Preparation V",s:HSUP,on:false}];
+var HHEAT=[{n:"Heating I",s:"-10% Heating interval (Skilling Potions)",hheat:10,on:true},{n:"Heating II",s:"-10% Heating interval (Skilling Potions)",hheat:10,on:false},{n:"Heating III",s:"-10% Heating interval in Herblore",hheat:10,on:false},{n:"Heating IV",s:HSUP,on:false},{n:"Heating V",s:HSUP,on:false}];
+var HSTIR=[{n:"Stirring I",s:"+3% Output Doubling chance (Skilling Potions)",d:3,on:true},{n:"Stirring II",s:"+5% Output Doubling chance (Skilling Potions)",d:5,on:false},{n:"Stirring III",s:"+5% Output Doubling chance in Herblore",d:5,on:false},{n:"Stirring IV",s:HSUP,on:false},{n:"Stirring V",s:HSUP,on:false}];
+var HBOT=[{n:"Bottling I",s:"+10% Product Quantity (Skilling Potions)",hpq:10,on:true},{n:"Bottling II",s:"+10% Product Quantity (Skilling Potions)",hpq:10,on:false},{n:"Bottling III",s:"+20% Product Quantity in Herblore",hpq:20,on:false},{n:"Bottling IV",s:HSUP,on:false},{n:"Bottling V",s:HSUP,on:false}];
+var HMG=[{n:"Apprentice Herbalist",s:"+10% Herblore XP",x:10,on:false},{n:"Journeyman Herbalist",s:"+5% Output Doubling, +3% Input Preservation",d:5,hpres:3,on:false},{n:"Veteran Herbalist",s:"+10% Herblore XP",x:10,on:false},{n:"Betty (pet)",s:"-1% Preparation interval",hprep:1,on:false}];
+[["Preparation","#c2a878"],["Heating","#e4572e"],["Stirring","#3b82f6"],["Bottling","#6bbf59"]].forEach(function(a){["I","II","III","IV","V"].forEach(function(t,i){IC[a[0]+" "+t]=["v",a[1]];LV[a[0]+" "+t]=[15,40,70,85,95][i]})});
+IC["Apprentice Herbalist"]=["t","#e0a020"];IC["Journeyman Herbalist"]=["t","#a0a4aa"];IC["Veteran Herbalist"]=["t","#b87333"];IC["Betty (pet)"]=["b","#6bbf59"];
+var HEQ=[
+{n:"Mortar and Pestle",s:"+3% Output Doubling, +2% Herblore XP, -1% Preparation interval",d:3,x:2,hprep:1,slot:"tool",on:true},
+{n:"Careful Extractor Gloves",s:"+1% Input Preservation, -2% Preparation interval, +2% Herblore XP",hpres:1,hprep:2,x:2,slot:"gloves",on:true},
+{n:"Experimenter Book",s:"-2% Input Preservation, -1% Preparation interval, +3% Herblore XP",hpres:-2,hprep:1,x:3,slot:"cog",on:true},
+{n:"Herblore Potion P1-A",s:"+5% Output Doubling chance in Herblore",d:5,slot:"pot",on:false}];
+SH.v='<path d="M10 3h4M11 3v4l-5 8a5 5 0 0 0 4 7h4a5 5 0 0 0 4-7l-5-8V3" fill="C"/>';
+SH.sw='<path d="M12 21c0-6-6-8-6-14M12 21c0-6 6-8 6-14M12 21V5" stroke="C" stroke-width="2.4" fill="none" stroke-linecap="round"/>';
+IC["Herblore Potion P1-A"]=["v","#6bbf59"];
+SH.mp='<path d="M4 11h16l-2 7a3 3 0 0 1-3 2H9a3 3 0 0 1-3-2z" fill="C"/><rect x="13" y="3" width="3" height="10" rx="1.5" transform="rotate(30 14 8)" fill="#8a6a43"/>';
+SH.bk='<rect x="4" y="4" width="15" height="16" rx="2" fill="C"/><rect x="7" y="4" width="2" height="16" fill="#5a3b22"/><circle cx="13.5" cy="11" r="2.5" fill="#d9b8ff"/>';
+IC["Mortar and Pestle"]=["mp","#cfc8b8"];IC["Careful Extractor Gloves"]=["g","#a0673a"];IC["Experimenter Book"]=["bk","#c9a36a"];
+function hcalc(r){
+  var prep=r.pr*Math.max(0,1-sum("hprep")/100),stir=r.st*Math.max(0,1-sum("hstir")/100),heat=r.ht*Math.max(0,1-sum("hheat")/100),cyc=prep+heat+stir+0.5*10,bph=36000/cyc,dm=1+sum("d")/100;
+  var keep=Math.max(0,1-Math.min(100,Math.max(-100,sum("hpres")))/100),pq=1+sum("hpq")/100;
+  var x=r.x*(1+sum("x")/100),pots=bph*Math.floor(r.out*pq+1e-9)*dm,val=pots*(HPR[r.n]||0);
+  var cost=bph*keep*r.inp.reduce(function(a,i){return a+i[1]*(HPR[i[0]]||0)},0);
+  var miss=r.inp.filter(function(i){return !HPR[i[0]]}).map(function(i){return i[0]});
+  return{n:r.n,t:r.t,cyc:cyc,heat:heat,keep:keep,bph:bph,x:x,xph:bph*x,br:bph,pots:pots,val:val,cost:cost,gph:val-cost,miss:miss,r:r};
+}
+function hitemRate(r,c,name){return r.n===name?c.pots:0}
+var HNAMES=HRECIPES.map(function(r){return r.n}).sort(function(a,b){return a.localeCompare(b)});
+function renderPrices(){
+  var pc=document.getElementById("priceCard");
+  if(!S.priceList){pc.style.display="none";return}
+  pc.style.display="";pc.querySelector("summary").textContent="Item sell prices (gold each)";
+  pc.querySelector(".legend").textContent="Potion values and ingredient prices used for Gold / hour (net = potions sold minus ingredients used).";
+  document.getElementById("prices").innerHTML=S.priceList.map(function(i){return '<label>'+esc(i)+'<input type="number" min="0" step="any" placeholder="0" value="'+(PR[i]||"")+'" data-p="'+esc(i)+'"></label>'}).join("");
+}
 var SKILLS={
 mining:{name:"Mining",nodeWord:"Rocks",title:"Melvor Idle 2 \u2013 Mining Dashboard",sub:"Which rock is best to mine? Based on v0.11.4-alpha (demo), 1.5s swing, no respawn time.",best:"Best rock",gl:'<span class="dot" style="background:var(--best)"></span>Primary resource <span class="dot" style="background:#3b82f6;margin-left:12px"></span>Geodes <span class="dot" style="background:#e0a020;margin-left:12px"></span>Stone',
   rocks:ROCKS,calc:calc,pr:PR,groups:{u:UPG,h:HND,b:BND,q:EQ,m:MG},mastery:function(){renderMMastery()},
   shop:[{k:"u",n:"Pickaxe Head"},{k:"h",n:"Pickaxe Handle"},{k:"b",n:"Pickaxe Binding"}],
-  toolName:"Mining Tool",toolIcon:SI.tool,noPrice:"Item prices aren\u2019t in yet.",
+  toolName:"Mining Tool",helmName:"Mining Helmet",glovesName:"Mining Gloves",slotNames:{cape:"Mining Cape",body:"Mining Torso",legs:"Mining Legs",boots:"Mining Boots",pic:"Mining Sightings Log",pot:"Mining Potion"},toolIcon:SI.tool,noPrice:"Item prices aren\u2019t in yet.",
   legend:'<span class="dot" style="background:var(--ore)"></span>Ore Vein <span class="dot" style="background:var(--ess);margin-left:12px"></span>Essence Vein <span class="dot" style="background:var(--gem);margin-left:12px"></span>Gem Vein',
   thead:function(g){return g?'<tr><th>Rock</th><th>Drops / hr</th><th>Geodes / hr</th><th>Stone / hr</th><th>Gold / hr</th></tr>':'<tr><th>Rock</th><th>Break %</th><th>Swings to break</th><th>XP / break</th><th>Breaks / hr</th><th>XP / hr</th></tr>'},
   row:function(r,g){return g?'<td>'+fmt(r.it)+'</td><td>'+(r.ge?fmt1(r.ge):"\u2013")+'</td><td>'+(r.sto?fmt1(r.sto):"\u2013")+'</td><td>'+fmt(r.gph)+'</td>':'<td>'+(+r.p.toFixed(2))+'%</td><td>'+r.H+'</td><td>'+(+r.x.toFixed(1))+'</td><td>'+fmt(r.br)+'</td><td>'+fmt(r.xph)+'</td>'},
@@ -724,11 +902,11 @@ woodcutting:{name:"Woodcutting",nodeWord:"Trees",title:"Melvor Idle 2 \u2013 Woo
   one:"tree",itemSearch:true,itemRate:witemRate,names:WNAMES,ph:"e.g. Maple Log, Bird Nest, Oak Tree Seed",help:"Shows how many you would receive per hour from every tree and bush you have unlocked, including seeds, bird nests and sticks.",
   theadI:'<tr><th>Tree</th><th>HP</th><th>Items per cut</th><th>Cuts / hr</th><th>Items / hr</th><th>Time per item</th><th>XP / hr</th></tr>',
   rowI:function(r){return '<td>'+r.hp+'</td><td>'+fmtS(r.ir/r.br)+'</td><td>'+fmt(r.br)+'</td><td>'+fmtS(r.ir)+'</td><td>'+timePer(r.ir)+'</td><td>'+fmt(r.xph)+'</td>'}},
-thieving:{name:"Thieving",nodeWord:"Targets",title:"Melvor Idle 2 \u2013 Thieving Dashboard",sub:"Lowtown District, Seashade Port, Farmers Market, Mage Tower, Bandit Encampment and Capital Marketplace. Based on v0.11.4-alpha (demo).",best:"Best target",
+thieving:{name:"Thieving",nodeWord:"Targets",title:"Melvor Idle 2 \u2013 Thieving Dashboard",sub:"Lowtown District, Seashade Port, Farmers Market, Mage Tower, Bandit Encampment, Capital Marketplace, Keltesta Mining Town and Desert Palace. Based on v0.11.6-alpha.1.",best:"Best target",
   gl:'<span class="dot" style="background:var(--best)"></span>Coins <span class="dot" style="background:#3b82f6;margin-left:12px"></span>Common items <span class="dot" style="background:#e0a020;margin-left:12px"></span>Rare items',
   rocks:TARGETS,calc:tcalc,pr:TPR,groups:{u:TDIS,h:[],b:[],q:TEQ,m:TMG},
-  shopTitle:"Location Distractions",shop:[{k:"u",n:"Lowtown District",loc:"Lowtown District"},{k:"u",n:"Seashade Port",loc:"Seashade Port"},{k:"u",n:"Farmers Market",loc:"Farmers Market"},{k:"u",n:"Mage Tower",loc:"Mage Tower"},{k:"u",n:"Bandit Encampment",loc:"Bandit Encampment"},{k:"u",n:"Capital Marketplace",loc:"Capital Marketplace"}],free:true,stats:true,
-  toolName:"Tool slot",helmName:"Thieving Helmet",glovesName:"Thieving Gloves",utilName:"Thieving Utility",toolIcon:si('<path d="M12 3l3 9-3 9-3-9z"/>'),headIcon:si('<circle cx="12" cy="12" r="7"/>'),
+  shopTitle:"Location Distractions",shop:[{k:"u",n:"Lowtown District",loc:"Lowtown District"},{k:"u",n:"Seashade Port",loc:"Seashade Port"},{k:"u",n:"Farmers Market",loc:"Farmers Market"},{k:"u",n:"Mage Tower",loc:"Mage Tower"},{k:"u",n:"Bandit Encampment",loc:"Bandit Encampment"},{k:"u",n:"Capital Marketplace",loc:"Capital Marketplace"},{k:"u",n:"Keltesta Mining Town",loc:"Keltesta Mining Town"},{k:"u",n:"Desert Palace",loc:"Desert Palace"}],free:true,stats:true,
+  toolName:"Thieving Tool",helmName:"Thieving Helmet",glovesName:"Thieving Gloves",utilName:"Thieving Utility",slotNames:{cape:"Thieving Cape",body:"Thieving Torso",legs:"Thieving Legs",boots:"Thieving Boots",pot:"Thieving Potion"},toolIcon:si('<path d="M12 3l3 9-3 9-3-9z"/>'),headIcon:si('<circle cx="12" cy="12" r="7"/>'),
   noPrice:"Item prices aren\u2019t in yet.",goldNote:"",
   legend:'<span class="dot" style="background:var(--gem)"></span>NPC <span class="dot" style="background:var(--ore);margin-left:12px"></span>Locked chest <span class="dot" style="background:var(--tree);margin-left:12px"></span>Stall <span class="dot" style="background:var(--bush);margin-left:12px"></span>Heist',
   thead:function(g){return g?'<tr><th>Target</th><th>Location</th><th>Success %</th><th>Coins / hr</th><th>Items / hr</th><th>Lockpicks used / hr</th><th>Gold / hr</th><th>HP lost / hr</th></tr>':'<tr><th>Target</th><th>Location</th><th>Success %</th><th>Seconds / attempt</th><th>XP / success</th><th>Attempts / hr</th><th>XP / hr</th><th>HP lost / hr</th></tr>'},
@@ -736,42 +914,102 @@ thieving:{name:"Thieving",nodeWord:"Targets",title:"Melvor Idle 2 \u2013 Thievin
   pick:function(a){return LOCSEL==="all"?a:a.filter(function(t){return t.loc===LOCSEL})},
   mastery:function(){renderTMastery()},itemSearch:true,itemRate:titemRate,one:"target",names:TNAMES,ph:"e.g. Thug Armband, Air Rune, Coins",help:"Shows how many you would receive per hour from every target in the selected location.",
   theadI:'<tr><th>Target</th><th>Location</th><th>Success %</th><th>Items per success</th><th>Items / hr</th><th>Time per item</th><th>XP / hr</th><th>HP lost / hr</th></tr>',
-  rowI:function(r){var sc=r.att*r.sc;return '<td>'+r.loc.split(" ")[0]+'</td><td>'+(+(r.sc*100).toFixed(2))+'%</td><td>'+fmtS(r.ir/sc)+'</td><td>'+fmtS(r.ir)+'</td><td>'+timePer(r.ir)+'</td><td>'+fmt(r.xph)+'</td><td>'+fmt(r.hp)+'</td>'}}
+  rowI:function(r){var sc=r.att*r.sc;return '<td>'+r.loc.split(" ")[0]+'</td><td>'+(+(r.sc*100).toFixed(2))+'%</td><td>'+fmtS(r.ir/sc)+'</td><td>'+fmtS(r.ir)+'</td><td>'+timePer(r.ir)+'</td><td>'+fmt(r.xph)+'</td><td>'+fmt(r.hp)+'</td>'}},
+herblore:{name:"Herblore",nodeWord:"Recipes",title:"Melvor Idle 2 – Herblore Dashboard",sub:"Skilling Potions. Based on v0.11.6-alpha.1 (demo). Each brew cycle is Preparing + Heating + Stirring + 10 Bottling steps (0.5s each); inputs are used and potions and XP are granted on every Bottling step.",best:"Best recipe",
+  gl:'<span class="dot" style="background:var(--best)"></span>Net gold (potions sold minus ingredients)',
+  rocks:HRECIPES,calc:hcalc,pr:HPR,priceList:HPRLIST,groups:{u:HPREP,h:HHEAT,b:HSTIR,k:HBOT,q:HEQ,m:HMG},shopTitle:"Herblore Tools",shopIcons:{u:si('<path d="M4 20l7-7M14 4l6 6-8 8-6-6z"/>'),h:si('<path d="M12 3c3 4 5 6 5 10a5 5 0 0 1-10 0c0-2 1-4 2-5 0 2 1 3 2 3 0-3 1-5 1-8z"/>'),b:si('<path d="M4 20L18 6M15 3l6 6"/>'),k:si('<path d="M10 3h4M11 3v4l-5 8a5 5 0 0 0 4 7h4a5 5 0 0 0 4-7l-5-8V3"/>')},shop:[{k:"u",n:"Preparation"},{k:"h",n:"Heating"},{k:"b",n:"Stirring"},{k:"k",n:"Bottling"}],
+  toolName:"Herblore Tool",glovesName:"Herblore Gloves",toolIcon:si('<path d="M4 11h16l-2 7a3 3 0 0 1-3 2H9a3 3 0 0 1-3-2z"/><path d="M13 3l3 9"/>'),
+  noPrice:"Enter ingredient prices below to see profit.",goldNote:"",
+  legend:'<span class="dot" style="background:var(--ore)"></span>Penril Herb recipes <span class="dot" style="background:var(--ess);margin-left:12px"></span>Sourweed Herb recipes <span class="dot" style="background:var(--tree);margin-left:12px"></span>Mantalyme Herb recipes <span class="dot" style="background:var(--gem);margin-left:12px"></span>Nomel Herb recipes',
+  thead:function(g){return g?'<tr><th>Recipe</th><th>Potions / hr</th><th>Potions value / hr</th><th>Ingredients cost / hr</th><th>Net gold / hr</th><th>Missing prices</th></tr>':'<tr><th>Recipe</th><th>Heating</th><th>Cycle time</th><th>Bottlings / hr</th><th>XP / bottling</th><th>Potions / hr</th><th>XP / hr</th></tr>'},
+  row:function(r,g){return g?'<td>'+fmt(r.pots)+'</td><td>'+fmt(r.val)+'</td><td>'+fmt(r.cost)+'</td><td>'+(r.gph<0?"-":"")+fmt(Math.abs(r.gph))+'</td><td>'+(r.miss.length?esc(r.miss.join(", ")):"–")+'</td>':'<td>'+(+r.heat.toFixed(2))+' s</td><td>'+(+r.cyc.toFixed(2))+' s</td><td>'+fmt(r.bph)+'</td><td>'+(+r.x.toFixed(1))+'</td><td>'+fmt(r.pots)+'</td><td>'+fmt(r.xph)+'</td>'},
+  itemSearch:true,itemRate:hitemRate,one:"recipe",names:HNAMES,ph:"e.g. Cooking Potion P1-A",help:"Shows how many potions you would brew per hour.",
+  theadI:'<tr><th>Recipe</th><th>Cycle time</th><th>Potions per bottling</th><th>Bottlings / hr</th><th>Items / hr</th><th>Time per item</th><th>XP / hr</th></tr>',
+  rowI:function(r){return '<td>'+(+r.cyc.toFixed(2))+' s</td><td>'+fmtS(r.ir/r.bph)+'</td><td>'+fmt(r.bph)+'</td><td>'+fmtS(r.ir)+'</td><td>'+timePer(r.ir)+'</td><td>'+fmt(r.xph)+'</td>'}}
 };
 
 var TMP={};try{TMP=JSON.parse(localStorage.getItem("mv2tmastery")||"{}")||{}}catch(e){TMP={}}
 function tsave(){try{localStorage.setItem("mv2tmastery",JSON.stringify(TMP))}catch(e){}}
 if(TMP.lvl)THLVL=+TMP.lvl;
 var TTY={n:"NPCs",s:"Stalls",c:"Locked Chests",h:"Heists"};
+var TTIER=["Novice","Easy","Adept","Intermediate","Hard","Expert"],TPTS=[1,2,3,5,8,12];
 var TTASK=(function(){
-  var L={LT:"Lowtown District",SP:"Seashade Port",FM:"Farmers Market",MT:"Mage Tower",BE:"Bandit Encampment",CM:"Capital Marketplace"},o=[];
-  var c=function(t,l,ty,n){o.push({t:t,k:"cnt",loc:L[l],ty:ty,n:n,key:"c:"+l+ty})},it=function(t,i,n){o.push({t:t,k:"item",it:i,n:n,key:"i:"+i})};
-  c(1,"CM","s",150);it(1,"Forbidden Grimoire",1);c(1,"CM","n",300);c(1,"FM","s",150);c(1,"FM","c",125);c(1,"CM","c",60);c(1,"BE","h",10);it(1,"Experimenter Book",1);
-  o.push({t:1,k:"gp",n:262500,key:"gp"});o.push({t:1,k:"lvl",n:10,key:"lvl"});
-  ["LT","SP","FM","MT","BE"].forEach(function(l){c(1,l,"n",300)});c(1,"SP","s",150);c(1,"LT","c",125);
-  ["Thug Armband","Thug Chief Ring","Ranchers Belt"].forEach(function(i){it(1,i,1)});
-  c(2,"CM","s",1000);o.push({t:2,k:"gp",n:1575000,key:"gp"});c(2,"LT","c",800);it(2,"Forbidden Grimoire",7);
-  ["MT","SP","FM","BE","CM","LT"].forEach(function(l){c(2,l,"n",2100)});c(2,"SP","s",1000);c(2,"FM","s",1000);c(2,"FM","c",800);c(2,"CM","c",400);c(2,"BE","h",70);
-  o.push({t:2,k:"key",n:1,key:"key"});
-  ["Runecrafters Tiara"].forEach(function(i){it(2,i,1)});it(2,"Experimenter Book",7);
-  ["Cursed Circlet","Fletchers Vambrace","Woodcutters Gloves","Blacksmiths Tongs","Banana Tree Seed"].forEach(function(i){it(2,i,1)});
-  o.push({t:2,k:"lvl",n:30,key:"lvl"});
-  ["Balaclava","Craftsmans Monocle","Fisherman's Raincoat","Chef's Hat","Straw Hat","Bandit Gloves"].forEach(function(i){it(2,i,1)});
-  o.forEach(function(x){x.pts=x.t;x.lbl=x.k==="cnt"?(x.ty==="h"?"Complete ":"Steal from ")+fmt(x.n)+" "+TTY[x.ty]+" in "+x.loc:x.k==="item"?"Gain "+x.n+" "+x.it:x.k==="gp"?"Create "+fmt(x.n)+" GP of products":x.k==="lvl"?"Thieving Level "+x.n:"Equip Ranchers Chest Key"});
+  var L={LT:"Lowtown District",SP:"Seashade Port",FM:"Farmers Market",MT:"Mage Tower",BE:"Bandit Encampment",CM:"Capital Marketplace",KM:"Keltesta Mining Town",DP:"Desert Palace",GC:"Gol Camp"},o=[];
+  var c=function(t,l,ty,n){o.push({t:t,k:"cnt",loc:L[l],ty:ty,n:n,key:"c:"+l+ty})},
+      it=function(t,i,n,lb){o.push({t:t,k:"item",it:i,n:n,key:"i:"+i,lb:lb})},
+      gp=function(t,n){o.push({t:t,k:"gp",n:n,key:"gp"})},lv=function(t,n){o.push({t:t,k:"lvl",n:n,key:"lvl"})},
+      ky=function(t,kn,ha,hb){o.push({t:t,k:"key",kn:kn,ha:ha,hb:hb,n:1,key:"k:"+kn})};
+  // Novice (35)
+  ["LT","SP","FM","MT","BE","CM"].forEach(function(l){c(0,l,"n",300)});c(0,"KM","n",275);c(0,"DP","n",200);c(0,"GC","n",150);
+  ["SP","FM","CM","KM","DP"].forEach(function(l){c(0,l,"s",150)});
+  c(0,"LT","c",125);c(0,"FM","c",125);c(0,"CM","c",60);c(0,"GC","c",30);
+  c(0,"MT","h",10);c(0,"BE","h",10);c(0,"KM","h",10);c(0,"DP","h",5);
+  gp(0,262500);lv(0,10);
+  ["Thug Armband","Thug Chief Ring","Ranchers Belt","Experimenter Book","Forbidden Grimoire","Gold Quiver","Jewelled Necklace","Commoner Shoes","Beastcrafters Knife"].forEach(function(x){it(0,x,1)});
+  it(0,"Ancient Stone Splint",200);it(0,"Gemstone Fragment",10);
+  // Easy (53)
+  ["LT","SP","FM","MT","BE","CM"].forEach(function(l){c(1,l,"n",2100)});c(1,"KM","n",1900);c(1,"DP","n",1400);c(1,"GC","n",1000);
+  ["SP","FM","CM","KM","DP"].forEach(function(l){c(1,l,"s",1000)});
+  c(1,"LT","c",800);c(1,"FM","c",800);c(1,"CM","c",400);c(1,"GC","c",200);
+  c(1,"MT","h",70);c(1,"BE","h",70);c(1,"KM","h",70);c(1,"DP","h",30);
+  gp(1,1575000);lv(1,30);
+  ky(1,"Ranchers Chest Key","Ranchers Chest Key Half (a)","Ranchers Chest Key Half (b)");ky(1,"Bank Chest Key","Bank Chest Key Half (a)","Bank Chest Key Half (b)");
+  ["Experimenter Book","Forbidden Grimoire","Gold Quiver","Jewelled Necklace","Commoner Shoes","Beastcrafters Knife"].forEach(function(x){it(1,x,7)});
+  ["Fletchers Vambrace","Bandit Bow","Reslinger 2H Crossbow","Blacksmiths Tongs","Miners Helmet","Gem Vein Lantern","Fancy Top","Peach Tree Seed","Orange Tree Seed","Banana Tree Seed",
+   "Balaclava","Craftman's Monocle","Fisherman's Raincoat","Chef's Hat","Straw Hat","Mortar and Pestle","Runecrafters Tiara","Cursed Circlet","Bandit Gloves","Woodcutters Gloves"].forEach(function(x){it(1,x,1)});
+  it(1,"Ancient Stone Splint",1400);
+  // Adept (45; 44 seen + 1 completed task not shown in the video)
+  ["FM","MT","BE","CM"].forEach(function(l){c(2,l,"n",9000)});c(2,"KM","n",8000);c(2,"DP","n",6000);c(2,"GC","n",4000);
+  ["FM","CM","KM","DP"].forEach(function(l){c(2,l,"s",4000)});
+  c(2,"FM","c",3400);c(2,"CM","c",1700);c(2,"GC","c",800);
+  c(2,"MT","h",300);c(2,"BE","h",300);c(2,"KM","h",300);c(2,"DP","h",120);
+  gp(2,6300000);ky(2,"Thug Chest Key");
+  it(2,"Runecrafters Tiara",7);it(2,"Cursed Circlet",8);it(2,"Bandit Gloves",4);it(2,"Banana Tree Seed",4);it(2,"Woodcutters Gloves",5);it(2,"Fletchers Vambrace",5);it(2,"Bandit Bow",5);
+  it(2,"Reslinger 2H Crossbow",5);it(2,"Blacksmiths Tongs",4);it(2,"Miners Helmet",4);it(2,"Gem Vein Lantern",5);it(2,"Ancient Stone Splint",6000);it(2,"Gemstone Fragment",70);it(2,"Fancy Top",4);
+  ["Palace Scimitar","Palace Wand","Retracker Kit","Apple Tree Seed","Cherry Tree Seed","Mango Tree Seed","Bushy Axe","Mystify Wand"].forEach(function(x){it(2,x,1)});
+  it(2,"Peach Tree Seed",4);it(2,"Orange Tree Seed",4);
+  o.push({t:2,k:"hid",n:1,key:"hid2",lbl:"Completed Adept task (not shown in your video)"});
+  // Intermediate (22; 21 seen + 1 completed task not shown)
+  c(3,"KM","n",19000);c(3,"DP","n",14000);c(3,"GC","n",9000);c(3,"KM","s",9000);c(3,"DP","s",9000);c(3,"GC","c",1900);c(3,"KM","h",700);c(3,"DP","h",200);
+  gp(3,12600000);
+  it(3,"Retracker Kit",3);it(3,"Palace Scimitar",3);it(3,"Palace Wand",3);it(3,"Apple Tree Seed",4);it(3,"Cherry Tree Seed",4);it(3,"Mango Tree Seed",4);it(3,"Banana Tree Seed",7);it(3,"Orange Tree Seed",7);it(3,"Peach Tree Seed",7);
+  it(3,"Beastslayer Gloves",1);it(3,"Cursed Circlet",35);it(3,"Gemstone Fragment",300);
+  o.push({t:3,k:"hid",n:1,key:"hid3",lbl:"Completed Intermediate task (not shown in your video)"});
+  // Hard (10; 9 seen)
+  c(4,"GC","n",24000);c(4,"GC","c",5000);c(4,"DP","h",500);gp(4,25200000);lv(4,92);it(4,"Lemon",1);ky(4,"Beast Chest Key");it(4,"Apple Tree Seed",7);it(4,"Cherry Tree Seed",7);
+  // Expert (5)
+  gp(5,88200000);lv(5,99);o.push({t:5,k:"pet",n:1,key:"pet:Clive",lbl:"Find Pet: Clive"});c(5,"DP","h",1100);it(5,"Aphiros Medallion",1);
+  o.forEach(function(x){x.pts=TPTS[x.t];if(x.lbl)return;
+    x.lbl=x.k==="cnt"?(x.ty==="h"?"Successfully complete ":"Successfully steal from ")+fmt(x.n)+" "+TTY[x.ty]+" in "+x.loc
+      :x.k==="item"?"Gain "+fmt(x.n)+" "+x.it+(x.n>1&&/Seed$/.test(x.it)?"s":"")
+      :x.k==="gp"?"Create "+fmt(x.n)+" Gold Pieces worth of products":x.k==="lvl"?"Thieving Level "+x.n:"Equip "+x.kn+" to the Thieving Toolbelt"});
   return o;
 })();
-var TCNT=(function(){var m={},a=[];TTASK.forEach(function(x){if(!m[x.key]){m[x.key]={key:x.key,lbl:x.k==="cnt"?(x.ty==="h"?"Heists completed in ":TTY[x.ty]+" stolen from in ")+x.loc:x.k==="item"?x.it+" gained":x.k==="gp"?"GP worth of products":x.k==="lvl"?"Thieving Level":"Ranchers Chest Key equipped (1 = yes)",a:null,b:null,x:x};a.push(m[x.key])}m[x.key][x.t===1?"a":"b"]=x.n});return a})();
+// progress shown in the user's Thieving Mastery Guild video (2026-11-22)
+var TVID={"c:LTn":2100,"c:SPn":2100,"c:FMn":3010,"c:MTn":2885,"c:BEn":3869,"c:CMn":3102,"c:KMn":2080,"c:SPs":425,"c:FMs":1000,"c:CMs":168,"c:LTc":800,"c:FMc":429,"c:CMc":3,"gp":1924202,
+ "i:Thug Armband":1,"i:Thug Chief Ring":1,"i:Ranchers Belt":1,"i:Experimenter Book":1,"i:Forbidden Grimoire":1,"i:Balaclava":1,"i:Craftman's Monocle":1,"i:Fisherman's Raincoat":1,"i:Chef's Hat":1,"i:Straw Hat":1,"i:Mortar and Pestle":1,"i:Runecrafters Tiara":1,"i:Cursed Circlet":1,"i:Bandit Gloves":1,"i:Woodcutters Gloves":1,"i:Banana Tree Seed":1,"hid2":1,"hid3":1};
+if(!TMP.v2){TMP={v2:1,goal:106,lvl:TMP.lvl};for(var _k in TVID)TMP[_k]=TVID[_k];tsave()}
+var TCNT=(function(){var m={},a=[];TTASK.forEach(function(x){if(x.k==="hid")return;if(!m[x.key]){m[x.key]={key:x.key,x:x,th:[],lbl:x.k==="cnt"?(x.ty==="h"?"Successfully complete Heists in ":"Successfully steal from "+TTY[x.ty]+" in ")+x.loc:x.k==="item"?"Gain "+x.it:x.k==="gp"?"Create Gold Pieces worth of products":x.k==="lvl"?"Thieving Level":x.k==="pet"?"Find Pet: Clive (1 = yes)":"Equip "+x.kn+" to the Thieving Toolbelt (1 = yes)"};a.push(m[x.key])}m[x.key].th.push([x.t,x.n])});return a})();
 function tval(k){return k==="lvl"?THLVL:(+TMP[k]||0)}
-function tStatus(){var nv=0,ez=0;TTASK.forEach(function(x){if(tval(x.key)>=x.n){if(x.t===1)nv++;else ez++}});return{nv:nv,ez:ez,pts:nv+ez*2}}
-function tNoData(x){if(x.k!=="cnt")return false;return !TARGETS.some(function(r){return r.loc===x.loc&&r.t===x.ty})}
+function tOwnKey(kn){return TEQ.some(function(e){return e.n===kn})}
+function tStatus(){var by=[0,0,0,0,0,0],tot=[0,0,0,0,0,0],pts=0;TTASK.forEach(function(x){tot[x.t]++;if(tval(x.key)>=x.n){by[x.t]++;pts+=x.pts}});return{by:by,tot:tot,pts:pts}}
+function tSrc(x){if(x.k==="cnt")return TARGETS.some(function(r){return r.loc===x.loc&&r.t===x.ty});
+  if(x.k==="item")return TARGETS.some(function(r){return [r.com,r.rar||[],r.fin||[]].some(function(t){return t.some(function(i){return i[0]===x.it})})});
+  if(x.k==="key")return !!x.ha||tOwnKey(x.kn);
+  if(x.k==="pet"||x.k==="hid")return false;return true}
+function tNoData(x){return x.k==="cnt"&&!tSrc(x)}
 function tPlan(goal){
   var st=tStatus(),save=THLVL,P={},steps=[],T=0;
   TCNT.forEach(function(c){P[c.key]=c.key==="lvl"?xpFor(THLVL):tval(c.key)});
-  P.ka=0;P.kb=0;
-  var done=function(x){if(x.k==="lvl")return P.lvl>=xpFor(x.n);if(x.k==="key")return P.key>=1||(P.ka>=1&&P.kb>=1);return P[x.key]>=x.n};
+  TTASK.forEach(function(x){if(x.k==="hid")P[x.key]=tval(x.key);if(x.k==="key"&&x.ha){P[x.key+"a"]=0;P[x.key+"b"]=0}});
+  var okQ=function(Q,x){if(x.k==="lvl")return Q.lvl>=xpFor(x.n);if(x.k==="key")return Q[x.key]>=1||(x.ha&&Q[x.key+"a"]>=1&&Q[x.key+"b"]>=1);return Q[x.key]>=x.n};
+  var done=function(x){return okQ(P,x)};
   var pts=function(){var t=0;TTASK.forEach(function(x){if(done(x))t+=x.pts});return t};
+  // keys you already own can be equipped right away
+  var free=TTASK.filter(function(x){return x.k==="key"&&!done(x)&&tOwnKey(x.kn)});
+  if(free.length){free.forEach(function(x){P[x.key]=1});steps.push({eq:1,h:0,T:0,done:free})}
   var have=pts(),guard=0;
-  while(have<goal&&guard++<200){
+  while(have<goal&&guard++<300){
     THLVL=Math.min(99,Math.max(save,lvlOf(P.lvl)));
     var rates=TARGETS.filter(function(r){return r.lv<=THLVL}).map(function(r){
       var c=tcalc(r),rt={},succ=c.att*c.sc;
@@ -780,23 +1018,24 @@ function tPlan(goal){
         else if(x.k==="item")v=titemRate(r,c,x.it);
         else if(x.k==="gp")v=c.parts[1][1]+c.parts[2][1];
         else if(x.k==="lvl")v=c.xph;
+        else if(x.k==="key"&&x.ha){var a=titemRate(r,c,x.ha),b=titemRate(r,c,x.hb);if(a>0)rt[x.key+"a"]=a;if(b>0)rt[x.key+"b"]=b}
         if(v>0)rt[x.key]=v});
-      rt.ka=titemRate(r,c,"Ranchers Chest Key Half (a)");rt.kb=titemRate(r,c,"Ranchers Chest Key Half (b)");
       return{r:r,c:c,rt:rt}});
     var best=null;
     var tryAct=function(acts){
       var Q={};for(var k in P)Q[k]=P[k];var dt=0;
       acts.forEach(function(a){dt+=a[1];for(var k in a[0].rt)Q[k]=(Q[k]||0)+a[0].rt[k]*a[1]});
-      if(!(dt>0))return;
-      var g=0,names=[];TTASK.forEach(function(x){if(done(x))return;var ok=x.k==="lvl"?Q.lvl>=xpFor(x.n):x.k==="key"?(Q.key>=1||(Q.ka>=1&&Q.kb>=1)):Q[x.key]>=x.n;if(ok){g+=x.pts;names.push(x)}});
+      if(!(dt>0)||!isFinite(dt))return;
+      var g=0,names=[];TTASK.forEach(function(x){if(done(x))return;if(okQ(Q,x)){g+=x.pts;names.push(x)}});
       if(!g)return;var sc=Math.min(g,goal-have)/dt;
       if(!best||sc>best.sc)best={sc:sc,acts:acts,dt:dt,names:names}};
     TTASK.forEach(function(x){
       if(done(x))return;
-      if(x.k==="key"){
-        var A=null,B=null;rates.forEach(function(e){if(e.rt.ka>0&&(!A||e.rt.ka>A.rt.ka))A=e;if(e.rt.kb>0&&(!B||e.rt.kb>B.rt.kb))B=e});
-        var acts=[];if(P.ka<1){if(!A)return;acts.push([A,(1-P.ka)/A.rt.ka])}if(P.kb<1){if(!B)return;acts.push([B,(1-P.kb)/B.rt.kb])}
+      if(x.k==="key"){if(!x.ha)return;
+        var A=null,B=null;rates.forEach(function(e){if(e.rt[x.key+"a"]>0&&(!A||e.rt[x.key+"a"]>A.rt[x.key+"a"]))A=e;if(e.rt[x.key+"b"]>0&&(!B||e.rt[x.key+"b"]>B.rt[x.key+"b"]))B=e});
+        var acts=[];if(P[x.key+"a"]<1){if(!A)return;acts.push([A,(1-P[x.key+"a"])/A.rt[x.key+"a"]])}if(P[x.key+"b"]<1){if(!B)return;acts.push([B,(1-P[x.key+"b"])/B.rt[x.key+"b"]])}
         tryAct(acts);return}
+      if(x.k==="hid"||x.k==="pet")return;
       var need=x.k==="lvl"?xpFor(x.n)-P.lvl:x.n-P[x.key];
       rates.forEach(function(e){var v=e.rt[x.key];if(v>0)tryAct([[e,need/v]])});
     });
@@ -806,35 +1045,41 @@ function tPlan(goal){
     have=pts();
   }
   THLVL=save;
-  var m=[];steps.forEach(function(s){var l=m[m.length-1];if(l&&l.r===s.r){l.h+=s.h;l.T=s.T;l.done=l.done.concat(s.done)}else m.push(s)});
+  var m=[];steps.forEach(function(s){var l=m[m.length-1];if(l&&!s.eq&&!l.eq&&l.r===s.r){l.h+=s.h;l.T=s.T;l.done=l.done.concat(s.done)}else m.push(s)});
   return{st:st,steps:m,T:T,ok:have>=goal,have:have};
 }
-function tCells(c){if(tNoData(c.x))return['<span class="legend">Not in demo</span>','<span class="legend">Not in demo</span>'];var v=tval(c.key),f=function(n){return n===null?'<span class="legend">\u2013</span>':v>=n?'<span class="mdone">\u2713 Done</span>':fmt(v)+" / "+fmt(n)};return[f(c.a),f(c.b)]}
+function tCell(c){var v=tval(c.key);return c.th.map(function(t){var x=TTASK.filter(function(y){return y.key===c.key&&y.t===t[0]&&y.n===t[1]})[0];
+  var s=c.x.k==="cnt"&&!tSrc(c.x)?'<span class="legend">no data</span>':v>=t[1]?'<span class="mdone">✓</span>':fmt(v)+" / "+fmt(t[1]);
+  return '<span style="white-space:nowrap;margin-right:10px"><span class="legend">'+TTIER[t[0]]+':</span> '+s+'</span>'}).join(" ")}
 function renderTMastery(){
-  var TRANKS=[["Apprentice Thief",32],["Journeyman Thief",48]],goal=+TMP.goal===48?48:32,trk=TRANKS.filter(function(r){return r[1]===goal})[0][0];
+  var TRANKS=[["Skilled Thief",106]],goal=106,trk="Skilled Thief";
   document.getElementById("mRouteT").textContent="Fastest route to "+trk;
-  document.getElementById("mTrackHelp").textContent="Enter how many of each you have so far (from the Thieving Mastery Guild window). Thieving Level comes from the level box below. Saved in this browser.";
+  document.getElementById("mTrackHelp").textContent="Pre-filled from your Thieving Mastery Guild video (22 Nov). Update the numbers as you go (from the Thieving Mastery Guild window). Thieving Level comes from the level box below. Saved in this browser.";
   var g=document.getElementById("mGoal");
-  g.dataset.built="";g.innerHTML='<div style="margin:0 0 10px">'+TRANKS.map(function(r){return '<button class="btn" data-tgoalb="'+r[1]+'" style="'+(r[1]===goal?'background:var(--best);border-color:var(--best);color:#fff;font-weight:700':'')+'">'+r[0]+' ('+r[1]+' points)</button>'}).join("")+'</div>';
+  g.dataset.built="";g.innerHTML='<div style="margin:0 0 10px">'+TRANKS.map(function(r){return '<button class="btn" style="background:var(--best);border-color:var(--best);color:#fff;font-weight:700">'+r[0]+' ('+r[1]+' points)</button>'}).join("")+' <span class="legend">Apprentice Thief and Journeyman Thief already reached.</span></div>';
   var P=tPlan(goal),st=P.st,left=Math.max(0,goal-st.pts);
-  document.getElementById("mHero").innerHTML='<div><div class="l">Mastery points</div><b>'+st.pts+' / '+goal+'</b></div><div><div class="l">Time to '+trk.split(" ")[0]+'</div><b>'+(left===0?"Done":P.ok?"~"+mTime(P.T):"\u2013")+'</b></div><div style="flex:1;min-width:200px" class="sub">Novice '+st.nv+' / 20 (1 point each) \u00b7 Easy '+st.ez+' / 30 (2 points each). Expected thieving time at your current level, Stealth and distractions; item tasks use average drop luck.</div>';
-  var nd=TTASK.filter(function(x){return tval(x.key)<x.n&&tNoData(x)}).map(function(x){return x.lbl});
+  document.getElementById("mHero").innerHTML='<div><div class="l">Mastery points</div><b>'+st.pts+' / '+goal+'</b></div><div><div class="l">Time to Skilled</div><b>'+(left===0?"Done":P.ok?"~"+mTime(P.T):"–")+'</b></div><div style="flex:1;min-width:200px" class="sub">'+TTIER.map(function(n,i){return n+' '+st.by[i]+' / '+st.tot[i]+' (+'+TPTS[i]+')'}).join(" · ")+'. Expected thieving time at your current level, Stealth and distractions; item tasks use average drop luck.</div>';
+  var nd=TTASK.filter(function(x){return tval(x.key)<x.n&&!tSrc(x)&&x.k!=="hid"}).map(function(x){return x.lbl});
   var R;
   if(left===0)R='<div class="legend">You have all '+goal+' points. '+trk+' reached!</div>';
   else if(!P.steps.length)R='<div class="legend">No route found with the targets available.</div>';
   else{
-    R='<table><thead><tr><th>#</th><th>Target</th><th>Location</th><th>Time</th><th>Running total</th><th>Completes</th></tr></thead><tbody>'+
-      P.steps.map(function(s,i){return '<tr><td>'+(i+1)+'</td><td><span class="dot" style="background:'+COL[s.r.t]+'"></span>'+s.r.n+'</td><td>'+s.r.loc+'</td><td>'+mTime(s.h)+'</td><td>'+mTime(s.T)+'</td><td>'+(s.done.length?s.done.map(function(x){return esc(x.lbl)+' (+'+x.pts+')'}).join("<br>"):'<span class="legend">progress toward the next step</span>')+'</td></tr>'}).join("")+'<tr><td></td><td><b>Total</b></td><td></td><td></td><td><b>'+mTime(P.T)+'</b></td><td><b>+'+(P.have-st.pts)+' points</b>'+(st.pts?' (+ '+st.pts+' already earned)':'')+'</td></tr></tbody></table>';
+    var acc=st.pts;
+    R='<table><thead><tr><th>#</th><th>Target</th><th>Location</th><th>Time</th><th>Running time</th><th>Points after</th><th>Completes</th></tr></thead><tbody>'+
+      P.steps.map(function(s,i){s.done.forEach(function(x){acc+=x.pts});var pa='<td>'+acc+' / '+goal+'</td>';var dn=s.done.length?s.done.slice().sort(function(a,b){return alpha(a.lbl,b.lbl)}).map(function(x){return esc(x.lbl)+' (+'+x.pts+')'}).join("<br>"):'<span class="legend">progress toward the next step</span>';
+        if(s.eq)return '<tr><td>'+(i+1)+'</td><td>Equip key you already own</td><td>–</td><td>0m</td><td>0m</td>'+pa+'<td>'+dn+'</td></tr>';
+        return '<tr><td>'+(i+1)+'</td><td><span class="dot" style="background:'+COL[s.r.t]+'"></span>'+s.r.n+'</td><td>'+s.r.loc+'</td><td>'+mTime(s.h)+'</td><td>'+mTime(s.T)+'</td>'+pa+'<td>'+dn+'</td></tr>'}).join("")+
+      '<tr><td></td><td><b>Total</b></td><td></td><td></td><td><b>'+mTime(P.T)+'</b></td><td></td><td><b>+'+(P.have-st.pts)+' points</b>'+(st.pts?' (+ '+st.pts+' already earned)':'')+'</td></tr></tbody></table>';
     if(!P.ok)R+='<div class="legend">Only '+P.have+' points are reachable with the targets in the dashboard.</div>';
   }
-  if(nd.length)R+='<div class="legend">Not possible in the demo yet (the target doesn\u2019t exist): '+nd.join(", ")+'.</div>';
-  R+='<div class="legend">Ranchers Chest Key needs both key halves (Farmer and Locked Ranchers Chest). Gold Pieces worth of products counts item sell value only, not coins.</div>';
+  if(nd.length)R+='<div class="legend">Not plannable yet (target locked or not in the dashboard, or no known drop source): '+nd.map(esc).join(", ")+'.</div>';
+  R+='<div class="legend">Chest key tasks need both key halves (Ranchers: Farmer + Locked Ranchers Chest; Bank: Capital Citizen + Locked Bank Chest). Gold Pieces worth of products counts item sell value only, not coins. One Hard task wasn’t visible in the video.</div>';
   document.getElementById("mRoute").innerHTML=R;
   var tr=document.getElementById("mTrack");
   if(tr.dataset.built!=="thieving"||!tr.contains(document.activeElement)){
-    tr.innerHTML='<table><thead><tr><th>Task</th><th>So far</th><th>Novice</th><th>Easy</th></tr></thead><tbody>'+TCNT.map(function(c,i){var cc=tCells(c);return '<tr><td>'+esc(c.lbl)+'</td><td>'+(c.key==="lvl"?"Level "+THLVL:tNoData(c.x)?'<span class="legend">\u2013</span>':'<input class="mi" type="number" min="0" data-tp="'+esc(c.key)+'" value="'+(TMP[c.key]||"")+'" placeholder="0" aria-label="'+esc(c.lbl)+'">')+'</td><td id="tn'+i+'">'+cc[0]+'</td><td id="te'+i+'">'+cc[1]+'</td></tr>'}).join("")+'</tbody></table>';
-    tr.dataset.built="thieving";
-  }else TCNT.forEach(function(c,i){var cc=tCells(c);document.getElementById("tn"+i).innerHTML=cc[0];document.getElementById("te"+i).innerHTML=cc[1]});
+    tr.innerHTML='<table><thead><tr><th>Task</th><th>So far</th><th>Targets</th></tr></thead><tbody>'+TCNT.map(function(c,i){return '<tr><td>'+esc(c.lbl)+'</td><td>'+(c.key==="lvl"?"Level "+THLVL:'<input class="mi" type="number" min="0" data-tp="'+esc(c.key)+'" value="'+(TMP[c.key]||"")+'" placeholder="0" aria-label="'+esc(c.lbl)+'">')+'</td><td id="tq'+i+'">'+tCell(c)+'</td></tr>'}).join("")+'</tbody></table>';
+    sortTrack(tr);tr.dataset.built="thieving";
+  }else TCNT.forEach(function(c,i){document.getElementById("tq"+i).innerHTML=tCell(c)});
 }
 document.addEventListener("input",function(e){var d=e.target.dataset||{};
   if(d.tp!==undefined){var v=parseFloat(e.target.value);if(isNaN(v)||v<=0)delete TMP[d.tp];else TMP[d.tp]=v;tsave();renderTMastery()}
@@ -846,21 +1091,21 @@ function wsave(){try{localStorage.setItem("mv2wmastery",JSON.stringify(WMP))}cat
 if(WMP.lvl)LVLS.woodcutting=+WMP.lvl;
 var WTASK=(function(){var o=[];
   var cut=function(t,n,c){o.push({t:t,k:"cnt",key:"t:"+n,n:c,lbl:"Cut "+fmt(c)+" "+n})};
-  var gain=function(t,key,nm,c){o.push({t:t,k:"gain",key:key,n:c,lbl:"Gain "+fmt(c)+" "+nm})};
+  var gain=function(t,key,nm,c){o.push({t:t,k:"gain",key:key,n:c,lbl:"Gain "+fmt(c)+" "+nm+" from Woodcutting"})};
   var oth=function(t,k,c,l){o.push({t:t,k:k,key:k,n:c,lbl:l})};
   cut(1,"Maple Tree",200);cut(1,"Ambervine Bush",500);cut(1,"Spikemoss Shrub",500);gain(1,"eagle","Eagle Nest",1);oth(1,"inst",250,"Instantly cut 250 Trees/Bushes");oth(1,"lvl",10,"Woodcutting Level 10");
   ["Normal Tree","Oak Tree","Willow Tree","Teak Tree","Mahogany Tree"].forEach(function(n){cut(1,n,200)});cut(1,"Flax Bush",500);
-  gain(1,"bird","Bird Nest",1);gain(1,"i:Oak Tree Seed","Oak Tree Seed",1);oth(1,"dmg",2500,"Deal 2,500 total damage");gain(1,"sticks","Sticks",500);oth(1,"gp",125000,"Create 125,000 GP of products");
-  cut(2,"Flax Bush",5000);oth(2,"gp",750000,"Create 750,000 GP of products");gain(2,"sticks","Sticks",5000);cut(2,"Teak Tree",2000);cut(2,"Maple Tree",2000);cut(2,"Mahogany Tree",2000);
+  gain(1,"bird","Bird Nest",1);gain(1,"i:Oak Tree Seed","Oak Tree Seed",1);oth(1,"dmg",2500,"Deal 2,500 total damage");gain(1,"sticks","Sticks",500);oth(1,"gp",125000,"Create 125,000 Gold Pieces worth of products");
+  cut(2,"Flax Bush",5000);oth(2,"gp",750000,"Create 750,000 Gold Pieces worth of products");gain(2,"sticks","Sticks",5000);cut(2,"Teak Tree",2000);cut(2,"Maple Tree",2000);cut(2,"Mahogany Tree",2000);
   cut(2,"Ambervine Bush",5000);cut(2,"Spikemoss Shrub",5000);gain(2,"eagle","Eagle Nests",150);
   ["Maple Tree Seed","Teak Tree Seed","Mahogany Tree Seed"].forEach(function(n){gain(2,"i:"+n,n,1)});oth(2,"inst",2000,"Instantly cut 2,000 Trees/Bushes");oth(2,"lvl",30,"Woodcutting Level 30");
   cut(2,"Normal Tree",2500);cut(2,"Oak Tree",2000);cut(2,"Willow Tree",2000);gain(2,"bird","Bird Nests",50);gain(2,"i:Oak Tree Seed","Oak Tree Seeds",3);gain(2,"i:Willow Tree Seed","Willow Tree Seed",1);oth(2,"dmg",15000,"Deal 15,000 total damage");
   o.forEach(function(x){x.pts=x.t});return o})();
-var WCNT=(function(){var m={},a=[];WTASK.forEach(function(x){if(!m[x.key]){var k=x.key;m[k]={key:k,a:null,b:null,lbl:k.indexOf("t:")===0?k.slice(2)+" cut":k.indexOf("i:")===0?k.slice(2)+"s gained":{sticks:"Sticks gained",bird:"Bird Nests gained",eagle:"Eagle Nests gained",inst:"Trees/Bushes instantly cut",dmg:"Total damage dealt",gp:"GP worth of products",lvl:"Woodcutting Level"}[k]};a.push(m[k])}m[x.key][x.t===1?"a":"b"]=x.n});return a})();
+var WCNT=(function(){var m={},a=[];WTASK.forEach(function(x){if(!m[x.key]){var k=x.key;m[k]={key:k,a:null,b:null,lbl:k.indexOf("t:")===0?"Cut "+k.slice(2):k.indexOf("i:")===0?"Gain "+k.slice(2)+"s from Woodcutting":{sticks:"Gain Sticks from Woodcutting",bird:"Gain Bird Nests from Woodcutting",eagle:"Gain Eagle Nests from Woodcutting",inst:"Instantly cut Trees/Bushes",dmg:"Deal total damage",gp:"Create Gold Pieces worth of products",lvl:"Woodcutting Level"}[k]};a.push(m[k])}m[x.key][x.t===1?"a":"b"]=x.n});return a})();
 function wval(k){return k==="lvl"?(LVLS.woodcutting||1):(+WMP[k]||0)}
 function wStatus(){var nv=0,ez=0;WTASK.forEach(function(x){if(wval(x.key)>=x.n){if(x.t===1)nv++;else ez++}});return{nv:nv,ez:ez,pts:nv+ez*2}}
 function wDD(){return Math.min(1,Math.max(0,sum("dd")/100))}
-function wNoData(k){return k==="eagle"||(k==="inst"&&wDD()<=0)}
+function wNoData(k){return k==="inst"&&wDD()<=0}
 function wPlan(goal){
   var st=wStatus(),P={},steps=[],T=0,base=LVLS.woodcutting||1,d=wDD();
   WCNT.forEach(function(c){P[c.key]=c.key==="lvl"?xpFor(base):wval(c.key)});
@@ -870,7 +1115,7 @@ function wPlan(goal){
   while(have<goal&&guard++<200){
     var L=Math.max(base,lvlOf(P.lvl));
     var rates=TREES.filter(function(r){return r.lv<=L}).map(function(r){var c=wcalc(r),rt={};
-      rt["t:"+r.n]=c.br;rt[r.t==="t"?"bird":"sticks"]=c.ph;if(r.rn)rt["i:"+r.rn]=c.ra;rt.gp=c.gph;rt.lvl=c.xph;rt.dmg=c.br*r.hp;if(r.t==="b"&&d>0)rt.inst=c.br*d;
+      rt["t:"+r.n]=c.br;rt[c.nn==="Eagle Nest"?"eagle":c.nn==="Bird Nest"?"bird":"sticks"]=c.ph;if(r.rn)rt["i:"+r.rn]=c.ra;rt.gp=c.gph;rt.lvl=c.xph;rt.dmg=c.br*r.hp;if(r.t==="b"&&d>0)rt.inst=c.br*d;
       for(var k in rt)if(!(rt[k]>0))delete rt[k];return{r:r,c:c,rt:rt}});
     var best=null;
     WTASK.forEach(function(x){
@@ -887,7 +1132,7 @@ function wPlan(goal){
   var m=[];steps.forEach(function(s){var l=m[m.length-1];if(l&&l.r===s.r){l.h+=s.h;l.T=s.T;l.L=s.L;l.done=l.done.concat(s.done)}else m.push(s)});
   return{st:st,steps:m,T:T,ok:have>=goal,have:have};
 }
-function wCells(c){if(c.key==="eagle")return['<span class="legend">No data yet</span>','<span class="legend">No data yet</span>'];var v=wval(c.key),f=function(n){return n===null?'<span class="legend">\u2013</span>':v>=n?'<span class="mdone">\u2713 Done</span>':fmt(v)+" / "+fmt(n)};return[f(c.a),f(c.b)]}
+function wCells(c){var v=wval(c.key),f=function(n){return n===null?'<span class="legend">\u2013</span>':v>=n?'<span class="mdone">\u2713 Done</span>':fmt(v)+" / "+fmt(n)};return[f(c.a),f(c.b)]}
 function renderWMastery(){
   var RK=[["Apprentice Woodcutter",24],["Journeyman Woodcutter",36]],goal=+WMP.goal===24?24:36,rk=RK.filter(function(r){return r[1]===goal})[0][0];
   document.getElementById("mRouteT").textContent="Fastest route to "+rk;
@@ -900,17 +1145,18 @@ function renderWMastery(){
   if(left===0)R='<div class="legend">You have all '+goal+' points. '+rk+' reached!</div>';
   else if(!P.steps.length)R='<div class="legend">No route found with the trees available.</div>';
   else{
-    R='<table><thead><tr><th>#</th><th>Tree</th><th>Time</th><th>Running total</th><th>Level after</th><th>Completes</th></tr></thead><tbody>'+
-      P.steps.map(function(s,i){return '<tr><td>'+(i+1)+'</td><td><span class="dot" style="background:'+COL[s.r.t]+'"></span>'+s.r.n+'</td><td>'+mTime(s.h)+'</td><td>'+mTime(s.T)+'</td><td>'+s.L+'</td><td>'+(s.done.length?s.done.map(function(x){return esc(x.lbl)+' (+'+x.pts+')'}).join("<br>"):'')+'</td></tr>'}).join("")+
-      '<tr><td></td><td><b>Total</b></td><td></td><td><b>'+mTime(P.T)+'</b></td><td></td><td><b>+'+(P.have-st.pts)+' points</b>'+(st.pts?' (+ '+st.pts+' already earned)':'')+'</td></tr></tbody></table>';
+    var acc=st.pts;
+    R='<table><thead><tr><th>#</th><th>Tree</th><th>Time</th><th>Running time</th><th>Points after</th><th>Level after</th><th>Completes</th></tr></thead><tbody>'+
+      P.steps.map(function(s,i){s.done.forEach(function(x){acc+=x.pts});return '<tr><td>'+(i+1)+'</td><td><span class="dot" style="background:'+COL[s.r.t]+'"></span>'+s.r.n+'</td><td>'+mTime(s.h)+'</td><td>'+mTime(s.T)+'</td><td>'+acc+' / '+goal+'</td><td>'+s.L+'</td><td>'+(s.done.length?s.done.slice().sort(function(a,b){return alpha(a.lbl,b.lbl)}).map(function(x){return esc(x.lbl)+' (+'+x.pts+')'}).join("<br>"):'')+'</td></tr>'}).join("")+
+      '<tr><td></td><td><b>Total</b></td><td></td><td><b>'+mTime(P.T)+'</b></td><td></td><td></td><td><b>+'+(P.have-st.pts)+' points</b>'+(st.pts?' (+ '+st.pts+' already earned)':'')+'</td></tr></tbody></table>';
     if(!P.ok)R+='<div class="legend">Only '+P.have+' points are reachable with the data in the dashboard.</div>';
   }
-  R+='<div class="legend">Not planned: the Eagle Nest tasks (drop rate not in the dashboard yet)'+(wDD()<=0?', and the Instantly cut tasks, which need a double damage chance (axe heads or Woodcutters Gloves) to cut a 2 HP bush in one hit':'')+'. Instant cuts are counted as double-damage hits on 2 HP bushes. Gold Pieces worth of products counts item sell value only.</div>';
+  R+='<div class="legend">'+(wDD()<=0?'Not planned: the Instantly cut tasks, which need a double damage chance (axe heads or Woodcutters Gloves) to cut a 2 HP bush in one hit. ':'')+'Eagle Nests come from Yew, Magic, Hard Oak and Redwood Trees (0.15% per hit, Woodcutting 60+). Instant cuts are counted as double-damage hits on 2 HP bushes. Gold Pieces worth of products counts item sell value only.</div>';
   document.getElementById("mRoute").innerHTML=R;
   var tr=document.getElementById("mTrack");
   if(tr.dataset.built!=="woodcutting"||!tr.contains(document.activeElement)){
     tr.innerHTML='<table><thead><tr><th>Task</th><th>So far</th><th>Novice</th><th>Easy</th></tr></thead><tbody>'+WCNT.map(function(c,i){var cc=wCells(c);return '<tr><td>'+esc(c.lbl)+'</td><td>'+(c.key==="lvl"?"Level "+wval("lvl"):'<input class="mi" type="number" min="0" data-wp="'+esc(c.key)+'" value="'+(WMP[c.key]||"")+'" placeholder="0" aria-label="'+esc(c.lbl)+'">')+'</td><td id="wn'+i+'">'+cc[0]+'</td><td id="we'+i+'">'+cc[1]+'</td></tr>'}).join("")+'</tbody></table>';
-    tr.dataset.built="woodcutting";
+    sortTrack(tr);tr.dataset.built="woodcutting";
   }else WCNT.forEach(function(c,i){var cc=wCells(c);document.getElementById("wn"+i).innerHTML=cc[0];document.getElementById("we"+i).innerHTML=cc[1]});
 }
 document.addEventListener("input",function(e){var d=e.target.dataset||{};if(d.wp!==undefined){var v=parseFloat(e.target.value);if(isNaN(v)||v<=0)delete WMP[d.wp];else WMP[d.wp]=v;wsave();renderWMastery()}});
@@ -922,9 +1168,11 @@ function useSkill(id){
   SLOTS.filter(function(x){return x.k==="cog"})[0].n=S.utilName||"Cog slot";
   SLOTS.filter(function(x){return x.k==="gloves"})[0].n=S.glovesName||"Gloves";
   SLOTS.filter(function(x){return x.k==="helm"})[0].n=S.helmName||"Helmet";
+  var SN=S.slotNames||{};[["cape","Cape"],["body","Body"],["legs","Legs"],["boots","Boots"],["pic","Picture slot"],["pot","Potion slot"]].forEach(function(a){SLOTS.filter(function(x){return x.k===a[0]})[0].n=SN[a[0]]||a[1]});
   document.getElementById("pageTitle").textContent=S.title;
   document.getElementById("pageSub").textContent=S.sub;
   if(S.itemSearch){ITEMNAMES=S.names;fillItems();ITEMQ=ITEMQS[skill]||"";var ii=document.getElementById("itemIn");ii.value=ITEMQ;ii.placeholder=S.ph;document.getElementById("itemHelp").textContent=S.help}
+  renderPrices();
   controls();
 }
 var skill="mining";
