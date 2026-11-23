@@ -999,6 +999,18 @@ function tSrc(x){if(x.k==="cnt")return TARGETS.some(function(r){return r.loc===x
   if(x.k==="pet"||x.k==="hid")return false;return true}
 function tNoData(x){return x.k==="cnt"&&!tSrc(x)}
 function tPlan(goal){
+  // Greedy alone can pick a poor order, so look ahead: at each decision try the top few moves,
+  // finish each one greedily, and keep the move whose full route is fastest.
+  var better=function(P,B){return !B||(P.ok&&!B.ok)||(P.ok===B.ok&&(P.ok?P.T<B.T-1e-9:P.have>B.have))};
+  var seq=[],best=tPlan1(goal,seq);
+  for(var d=0;d<best.n&&d<12;d++){
+    var cur=null,ck=0;
+    for(var k=0;k<7;k++){var P=tPlan1(goal,seq.concat([k]));if(P.skip)break;if(better(P,cur)){cur=P;ck=k}}
+    if(!cur)break;seq.push(ck);if(better(cur,best))best=cur;
+  }
+  return best;
+}
+function tPlan1(goal,seq){
   var st=tStatus(),save=THLVL,P={},steps=[],T=0;
   TCNT.forEach(function(c){P[c.key]=c.key==="lvl"?xpFor(THLVL):tval(c.key)});
   TTASK.forEach(function(x){if(x.k==="hid")P[x.key]=tval(x.key);if(x.k==="key"&&x.ha){P[x.key+"a"]=0;P[x.key+"b"]=0}});
@@ -1008,7 +1020,7 @@ function tPlan(goal){
   // keys you already own can be equipped right away
   var free=TTASK.filter(function(x){return x.k==="key"&&!done(x)&&tOwnKey(x.kn)});
   if(free.length){free.forEach(function(x){P[x.key]=1});steps.push({eq:1,h:0,T:0,done:free})}
-  var have=pts(),guard=0;
+  var have=pts(),guard=0,it=0;
   while(have<goal&&guard++<300){
     THLVL=Math.min(99,Math.max(save,lvlOf(P.lvl)));
     var rates=TARGETS.filter(function(r){return r.lv<=THLVL}).map(function(r){
@@ -1021,14 +1033,15 @@ function tPlan(goal){
         else if(x.k==="key"&&x.ha){var a=titemRate(r,c,x.ha),b=titemRate(r,c,x.hb);if(a>0)rt[x.key+"a"]=a;if(b>0)rt[x.key+"b"]=b}
         if(v>0)rt[x.key]=v});
       return{r:r,c:c,rt:rt}});
-    var best=null;
+    var best=null,cands=[];
     var tryAct=function(acts){
       var Q={};for(var k in P)Q[k]=P[k];var dt=0;
       acts.forEach(function(a){dt+=a[1];for(var k in a[0].rt)Q[k]=(Q[k]||0)+a[0].rt[k]*a[1]});
       if(!(dt>0)||!isFinite(dt))return;
       var g=0,names=[];TTASK.forEach(function(x){if(done(x))return;if(okQ(Q,x)){g+=x.pts;names.push(x)}});
       if(!g)return;var sc=Math.min(g,goal-have)/dt;
-      if(!best||sc>best.sc)best={sc:sc,acts:acts,dt:dt,names:names}};
+      var cand={sc:sc,acts:acts,dt:dt,names:names};cands.push(cand);
+      if(!best||sc>best.sc)best=cand};
     TTASK.forEach(function(x){
       if(done(x))return;
       if(x.k==="key"){if(!x.ha)return;
@@ -1040,13 +1053,23 @@ function tPlan(goal){
       rates.forEach(function(e){var v=e.rt[x.key];if(v>0)tryAct([[e,need/v]])});
     });
     if(!best)break;
+    var pk=seq[it++]||0;
+    if(pk){
+      cands.sort(function(x,y){return y.sc-x.sc});
+      // "level up first" moves: train XP at the best XP target until a locked target unlocks
+      var xb=null;rates.forEach(function(e){if(e.c.xph>0&&(!xb||e.c.xph>xb.c.xph))xb=e});
+      var ul=[];if(xb)TARGETS.forEach(function(r){if(r.lv>THLVL&&r.lv<=99&&ul.indexOf(r.lv)<0)ul.push(r.lv)});
+      ul.sort(function(a,b){return a-b});
+      var uc=ul.slice(0,3).map(function(L){var need=xpFor(L)-P.lvl;return{sc:0,acts:[[xb,need/xb.c.xph]],dt:need/xb.c.xph,names:TTASK.filter(function(x){return x.k==="lvl"&&!done(x)&&x.n<=L})}});
+      var order=cands.slice(0,4).concat(uc).concat(cands.slice(4));
+      if(pk>=order.length){THLVL=save;return{skip:1}}best=order[pk]}
     best.acts.forEach(function(a){for(var k in a[0].rt)P[k]=(P[k]||0)+a[0].rt[k]*a[1];T+=a[1];steps.push({r:a[0].r,h:a[1],T:T,done:[]})});
     steps[steps.length-1].done=best.names;
     have=pts();
   }
   THLVL=save;
   var m=[];steps.forEach(function(s){var l=m[m.length-1];if(l&&!s.eq&&!l.eq&&l.r===s.r){l.h+=s.h;l.T=s.T;l.done=l.done.concat(s.done)}else m.push(s)});
-  return{st:st,steps:m,T:T,ok:have>=goal,have:have};
+  return{st:st,steps:m,T:T,ok:have>=goal,have:have,n:it};
 }
 function tCell(c){var v=tval(c.key);return c.th.map(function(t){var x=TTASK.filter(function(y){return y.key===c.key&&y.t===t[0]&&y.n===t[1]})[0];
   var s=c.x.k==="cnt"&&!tSrc(c.x)?'<span class="legend">no data</span>':v>=t[1]?'<span class="mdone">✓</span>':fmt(v)+" / "+fmt(t[1]);
@@ -1082,7 +1105,7 @@ function renderTMastery(){
   }else TCNT.forEach(function(c,i){document.getElementById("tq"+i).innerHTML=tCell(c)});
 }
 document.addEventListener("input",function(e){var d=e.target.dataset||{};
-  if(d.tp!==undefined){var v=parseFloat(e.target.value);if(isNaN(v)||v<=0)delete TMP[d.tp];else TMP[d.tp]=v;tsave();renderTMastery()}
+  if(d.tp!==undefined){var v=parseFloat(e.target.value);if(isNaN(v)||v<=0)delete TMP[d.tp];else TMP[d.tp]=v;tsave();clearTimeout(window._tmT);window._tmT=setTimeout(renderTMastery,250)}
   });
 document.addEventListener("click",function(e){var b=e.target.closest("[data-tgoalb]");if(b){TMP.goal=+b.dataset.tgoalb;tsave();renderTMastery()}});
 
@@ -1107,30 +1130,39 @@ function wStatus(){var nv=0,ez=0;WTASK.forEach(function(x){if(wval(x.key)>=x.n){
 function wDD(){return Math.min(1,Math.max(0,sum("dd")/100))}
 function wNoData(k){return k==="inst"&&wDD()<=0}
 function wPlan(goal){
+  var better=function(P,B){return !B||(P.ok&&!B.ok)||(P.ok===B.ok&&(P.ok?P.T<B.T-1e-9:P.have>B.have))};
+  var seq=[],best=wPlan1(goal,seq);
+  for(var d=0;d<best.n&&d<12;d++){var cur=null,ck=0;
+    for(var k=0;k<5;k++){var P=wPlan1(goal,seq.concat([k]));if(P.skip)break;if(better(P,cur)){cur=P;ck=k}}
+    if(!cur)break;seq.push(ck);if(better(cur,best))best=cur}
+  return best;
+}
+function wPlan1(goal,seq){
   var st=wStatus(),P={},steps=[],T=0,base=LVLS.woodcutting||1,d=wDD();
   WCNT.forEach(function(c){P[c.key]=c.key==="lvl"?xpFor(base):wval(c.key)});
   var done=function(x,Q){Q=Q||P;return x.k==="lvl"?Q.lvl>=xpFor(x.n):Q[x.key]>=x.n};
   var pts=function(){var t=0;WTASK.forEach(function(x){if(done(x))t+=x.pts});return t};
-  var have=pts(),guard=0;
+  var have=pts(),guard=0,it=0;
   while(have<goal&&guard++<200){
     var L=Math.max(base,lvlOf(P.lvl));
     var rates=TREES.filter(function(r){return r.lv<=L}).map(function(r){var c=wcalc(r),rt={};
       rt["t:"+r.n]=c.br;rt[c.nn==="Eagle Nest"?"eagle":c.nn==="Bird Nest"?"bird":"sticks"]=c.ph;if(r.rn)rt["i:"+r.rn]=c.ra;rt.gp=c.gph;rt.lvl=c.xph;rt.dmg=c.br*r.hp;if(r.t==="b"&&d>0)rt.inst=c.br*d;
       for(var k in rt)if(!(rt[k]>0))delete rt[k];return{r:r,c:c,rt:rt}});
-    var best=null;
+    var best=null,cands=[];
     WTASK.forEach(function(x){
       if(done(x)||wNoData(x.key))return;
       var need=x.k==="lvl"?xpFor(x.n)-P.lvl:x.n-P[x.key];
       rates.forEach(function(e){var v=e.rt[x.key];if(!(v>0))return;var dt=need/v,Q={};for(var k in P)Q[k]=P[k];for(var k2 in e.rt)Q[k2]=(Q[k2]||0)+e.rt[k2]*dt;
         var g=0,names=[];WTASK.forEach(function(y){if(!done(y)&&done(y,Q)){g+=y.pts;names.push(y)}});
-        var sc=Math.min(g,goal-have)/dt;if(g&&(!best||sc>best.sc))best={sc:sc,e:e,dt:dt,names:names}});
+        var sc=Math.min(g,goal-have)/dt;if(g){var cd={sc:sc,e:e,dt:dt,names:names};cands.push(cd);if(!best||sc>best.sc)best=cd}});
     });
     if(!best)break;
+    var pk=seq[it++]||0;if(pk){cands.sort(function(x,y){return y.sc-x.sc});if(pk>=cands.length)return{skip:1};best=cands[pk]}
     for(var k in best.e.rt)P[k]=(P[k]||0)+best.e.rt[k]*best.dt;T+=best.dt;
     steps.push({r:best.e.r,h:best.dt,T:T,done:best.names,L:lvlOf(P.lvl)});have=pts();
   }
   var m=[];steps.forEach(function(s){var l=m[m.length-1];if(l&&l.r===s.r){l.h+=s.h;l.T=s.T;l.L=s.L;l.done=l.done.concat(s.done)}else m.push(s)});
-  return{st:st,steps:m,T:T,ok:have>=goal,have:have};
+  return{st:st,steps:m,T:T,ok:have>=goal,have:have,n:it};
 }
 function wCells(c){var v=wval(c.key),f=function(n){return n===null?'<span class="legend">\u2013</span>':v>=n?'<span class="mdone">\u2713 Done</span>':fmt(v)+" / "+fmt(n)};return[f(c.a),f(c.b)]}
 function renderWMastery(){
@@ -1159,7 +1191,7 @@ function renderWMastery(){
     sortTrack(tr);tr.dataset.built="woodcutting";
   }else WCNT.forEach(function(c,i){var cc=wCells(c);document.getElementById("wn"+i).innerHTML=cc[0];document.getElementById("we"+i).innerHTML=cc[1]});
 }
-document.addEventListener("input",function(e){var d=e.target.dataset||{};if(d.wp!==undefined){var v=parseFloat(e.target.value);if(isNaN(v)||v<=0)delete WMP[d.wp];else WMP[d.wp]=v;wsave();renderWMastery()}});
+document.addEventListener("input",function(e){var d=e.target.dataset||{};if(d.wp!==undefined){var v=parseFloat(e.target.value);if(isNaN(v)||v<=0)delete WMP[d.wp];else WMP[d.wp]=v;wsave();clearTimeout(window._wmT);window._wmT=setTimeout(renderWMastery,250)}});
 document.addEventListener("click",function(e){var b=e.target.closest("[data-wgoalb]");if(b){WMP.goal=+b.dataset.wgoalb;wsave();renderWMastery()}});
 function useSkill(id){
   S=SKILLS[id];GROUPS=S.groups;UPG=GROUPS.u;HND=GROUPS.h;BND=GROUPS.b;EQ=GROUPS.q;MG=GROUPS.m;PR=S.pr;ROCKS=S.rocks;calc=S.calc;SHOP=S.shop;
