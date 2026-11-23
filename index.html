@@ -651,7 +651,7 @@ var LOCSEL="all";
 var TMG=[
 {n:"Apprentice Thief",s:"+10% Thieving XP",x:10,on:true},
 {n:"Journeyman Thief",s:"+60 Stealth",stl:60,on:true},
-{n:"Skilled Thief",s:"+40 Fortune (not modelled), +50% Rare Loot chance \u00b7 106 points",rare:50,on:false},
+{n:"Skilled Thief",s:"+40 Fortune (+40% item quantities), +50% Rare Loot chance \u00b7 106 points",fort:40,rare:50,on:false},
 {n:"Veteran Thief",s:"+10% Thieving XP, extra toolbelt slot",x:10,on:false},
 {n:"Clive (pet)",s:"+1% currency reward quantity",cur:1,on:false}];
 [["Apprentice Thief","t","#e0a020"],["Journeyman Thief","t","#a0a4aa"],["Skilled Thief","t","#b87333"],["Veteran Thief","t","#7a8fb8"],["Clive (pet)","b","#c9a36a"]].forEach(function(a){IC[a[0]]=[a[1],a[2]]});
@@ -659,7 +659,7 @@ SH.d='<circle cx="12" cy="12" r="7" fill="C"/>';
 [["Gold Rings on a String","d","#e0a020"],["Slime Getaway","d","#6bbf59"],["Pebble Sling","d","#9aa0a6"],["Lockpick","s","#a07850"],["Thug Chest Key","s","#c9a040"],["Ivory Athenaeum Key","s","#d8d0c0"],["Fire Wizard Hat","hat","#d03a2a"],["Ivory Athenaeum Hood","hat","#7a7f88"],["Fire Wizard Robe","bod","#d03a2a"],["Keltesta Top","bod","#9aa0a6"],["Ivory Athenaeum Robe","bod","#6a7080"],["Ivory Athenaeum Bottoms","leg","#6a7080"],["Thieving Potion P1-A","pot","#e0b030"],["Cod Sushi","f","#f3e6d4"],["Sand Pitfall","d","#d9b26b"],["Rappel Getaway","d","#4aa3df"],["Sandstorm","d","#c9a36a"],["Desert Merchant","d","#e0a020"],["Baked Goods","d","#d9a45b"],["Blocked Passage","d","#7a7f88"],["Rare Pickaxe","d","#a9aeb6"],["Sleight of Hand","d","#c07ad6"],["Blockade","d","#8d6e3f"],["Tainted Wine","d","#8b2f4a"],["Agility Level 60","d","#4aa3df"],["Jumping & Evading Level 24","d","#4aa3df"],["Silver Key (Stolen Goods)","d","#c0c4cc"],["Agility Level 50","d","#4aa3df"],["Climbing & Jumping Level 20","d","#4aa3df"],["Mischief","d","#c07ad6"],["Bait Scattering","d","#d98e6a"],["Tangled Netting","d","#8fb7a3"],["Rare Catch","d","#e0a020"],["Rotten Fish Panic","d","#6bbf59"],["Bee Free","d","#e0c040"],["Stinky Fertiliser","d","#8d6e3f"],["Bring the Expert","d","#e0a020"],["Peculiar Tool","d","#6bbf59"],["Flying Books","d","#c9a36a"],["Unstable Elements","d","#e4572e"],["Fake Wizard","d","#7c6bd6"],["Holy Distraction","d","#f0e6b8"],["Silver Key (Forbidden Library)","d","#cfd3d8"],["Small Fire","d","#e4572e"],["Fake Arrows","d","#c9a36a"],["Distracting Archery","d","#6bbf59"],["Rune Marbles","d","#7c6bd6"],["Rare Find","d","#e0a020"]].forEach(function(a){IC[a[0]]=[a[1],a[2]]});
 var TEQ=[
 {n:"Lockpick",s:"Opens locked chests (consumed: 1 per attempt)",slot:"tool",on:true},
-{n:"Thug Chest Key",s:"+500 Stealth and +50 Fortune for Locked Thug Chest only; opens it without using Lockpicks",stlC:500,key:"Locked Thug Chest",slot:"tool",on:false},
+{n:"Thug Chest Key",s:"+500 Stealth and +50 Fortune (+50% item quantities) for Locked Thug Chest only; opens it without using Lockpicks",stlC:500,fortC:50,key:"Locked Thug Chest",slot:"tool",on:false},
 {n:"Ivory Athenaeum Key",s:"No Thieving bonuses shown",slot:"tool",on:false},
 {n:"Fire Wizard Hat",s:"No Thieving bonuses (Fire Wizard set: Fire Magic only)",slot:"helm",on:true},
 {n:"Balaclava",s:"+15 Stealth",stl:15,slot:"helm",on:false},
@@ -777,17 +777,18 @@ var TARGETS=[
 {n:"Palace Citizen",lv:80,t:"n",loc:DP,P:946,M:255,x:53,T:3,cp:70,ca:18,cb:278,cc:15,rr:1,
  com:[["Gold Bar",50.51,1,1],["Gold Topaz Ring",9.09,1,1],["Gold Topaz Amulet",8.08,1,1],["Gold Ruby Ring",7.07,1,1],["Gold Ruby Amulet",7.07,1,1],["Pumpkin Pie",7.07,1,1],["Gold Emerald Ring",6.06,1,1],["Gold Emerald Amulet",5.05,1,1]],
  rar:[["Gold Diamond Ring",54,1,1],["Gold Diamond Amulet",45.5,1,1],["Fancy Top",0.5,1,1]]}];
-function tgold(tbl){var g=0,n=0;tbl.forEach(function(it){var q=(it[2]+it[3])/2;g+=it[1]/100*q*(TPR[it[0]]||0);n+=it[1]/100*q});return[g,n]}
+var TFORT=0;function fq(a,b){var m=1+TFORT/100;return(Math.floor(a*m+1e-9)+Math.floor(b*m+1e-9))/2}
+function tgold(tbl){var g=0,n=0;tbl.forEach(function(it){var q=fq(it[2],it[3]);g+=it[1]/100*q*(TPR[it[0]]||0);n+=it[1]/100*q});return[g,n]}
 function tcalc(r){
   var d=function(k){return dsum(k,r.loc)};
   var P=r.P*Math.max(0,1-d("per")+sum("perE")),T=r.T*(1-d("ivl")),stun=2*Math.max(0,1-d("stn")-sum("stnE"))*(1-d("avd"))*Math.max(0,1-sum("avdG")/100);
-  var kt=EQ.some(function(e){return e.on&&e.key===r.n});var xx=r.x*(1+sum("x")/100),sc=Math.min(1,(THLVL+sum("stl")+(kt?sum("stlC"):0)+100)/(P+100)),cyc=T+(1-sc)*stun,att=3600/cyc,succ=att*sc;
+  var kt=EQ.some(function(e){return e.on&&e.key===r.n});TFORT=sum("fort")+(kt?sum("fortC"):0);var xx=r.x*(1+sum("x")/100),sc=Math.min(1,(THLVL+sum("stl")+(kt?sum("stlC"):0)+100)/(P+100)),cyc=T+(1-sc)*stun,att=3600/cyc,succ=att*sc;
   var dm=1+sum("d")/100,cur=1+sum("cur")/100,rm=1+sum("rare")/100;
   var cg=tgold(r.com),rg=tgold(r.rar||[]);
   var coins=succ*r.cp/100*(r.ca+r.cb)/2*cur,gc=succ*r.cc/100*cg[0]*dm,gr=succ*r.rr/100*rm*rg[0]*dm;
   var items=succ*(r.cc/100*cg[1]+r.rr/100*rm*rg[1])*dm,hph=0,xph=succ*xx;
   if(r.st){var St=Math.max(1,r.st-d(r.sk==="bg"?"stg2":"stg")),fg=tgold(r.fin);hph=succ/St;xph=hph*xx;gr+=hph*fg[0]*dm;items+=hph*fg[1]*dm}
-  return{n:r.n,t:r.t,loc:r.loc,sc:sc,cyc:cyc,x:xx,att:att,hph:hph,xph:xph,hp:att*(1-sc)*(1+r.M)/2,coins:coins,
+  return{n:r.n,t:r.t,loc:r.loc,fort:TFORT,sc:sc,cyc:cyc,x:xx,att:att,hph:hph,xph:xph,hp:att*(1-sc)*(1+r.M)/2,coins:coins,
     items:items,lpn:kt?0:att*(r.lp||0),gph:coins+gc+gr-(kt?0:att*(r.lp||0)*(TPR.Lockpick||0)),
     parts:[["Coins",coins],["Common items",gc],["Rare items",gr]]};
 }
@@ -811,9 +812,9 @@ function renderItemSug(sel){
   el.innerHTML=m.length?'<span class="legend">Did you mean:</span> '+m.map(function(n){return '<button class="btn" data-pick="'+esc(n)+'">'+esc(n)+'</button>'}).join(" "):'<span class="legend">No item matches.</span>';
 }
 function titemRate(r,c,name){
-  var succ=c.att*c.sc,dm=1+sum("d")/100,cur=1+sum("cur")/100,rm=1+sum("rare")/100;
+  TFORT=c.fort||0;var succ=c.att*c.sc,dm=1+sum("d")/100,cur=1+sum("cur")/100,rm=1+sum("rare")/100;
   if(name==="Coins")return succ*r.cp/100*(r.ca+r.cb)/2*cur;
-  var q=function(tbl,chance){var t=0;tbl.forEach(function(i){if(i[0]===name)t+=i[1]/100*(i[2]+i[3])/2});return t*chance/100*dm};
+  var q=function(tbl,chance){var t=0;tbl.forEach(function(i){if(i[0]===name)t+=i[1]/100*fq(i[2],i[3])});return t*chance/100*dm};
   var v=succ*(q(r.com,r.cc)+q(r.rar||[],r.rr*rm));
   if(r.st)v+=c.hph*q(r.fin,100);
   return v;
