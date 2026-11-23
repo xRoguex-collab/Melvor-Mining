@@ -651,8 +651,8 @@ var LOCSEL="all";
 var TMG=[
 {n:"Apprentice Thief",s:"+10% Thieving XP",x:10,on:true},
 {n:"Journeyman Thief",s:"+60 Stealth",stl:60,on:true},
-{n:"Skilled Thief",s:"+40 Fortune (+40% item quantities), +50% Rare Loot chance \u00b7 106 points",fort:40,rare:50,on:false},
-{n:"Veteran Thief",s:"+10% Thieving XP, extra toolbelt slot",x:10,on:false},
+{n:"Skilled Thief",s:"+40 Fortune (+40% item quantities), +50% Rare Loot chance \u00b7 106 points",fort:40,rare:50,on:true},
+{n:"Veteran Thief",s:"+10% Thieving XP, extra toolbelt slot \u00b7 211 points",x:10,on:false},
 {n:"Clive (pet)",s:"+1% currency reward quantity",cur:1,on:false}];
 [["Apprentice Thief","t","#e0a020"],["Journeyman Thief","t","#a0a4aa"],["Skilled Thief","t","#b87333"],["Veteran Thief","t","#7a8fb8"],["Clive (pet)","b","#c9a36a"]].forEach(function(a){IC[a[0]]=[a[1],a[2]]});
 SH.d='<circle cx="12" cy="12" r="7" fill="C"/>';
@@ -1003,10 +1003,10 @@ function tPlan(goal){
   // Greedy alone can pick a poor order, so look ahead: at each decision try the top few moves,
   // finish each one greedily, and keep the move whose full route is fastest.
   var better=function(P,B){return !B||(P.ok&&!B.ok)||(P.ok===B.ok&&(P.ok?P.T<B.T-1e-9:P.have>B.have))};
-  var seq=[],best=tPlan1(goal,seq);
-  for(var d=0;d<best.n&&d<12;d++){
+  var seq=[],best=tPlan1(goal,seq),t0=Date.now();
+  for(var d=0;d<best.n&&d<12&&Date.now()-t0<1500;d++){
     var cur=null,ck=0;
-    for(var k=0;k<7;k++){var P=tPlan1(goal,seq.concat([k]));if(P.skip)break;if(better(P,cur)){cur=P;ck=k}}
+    for(var k=0;k<7&&Date.now()-t0<1500;k++){var P=tPlan1(goal,seq.concat([k]));if(P.skip)break;if(better(P,cur)){cur=P;ck=k}}
     if(!cur)break;seq.push(ck);if(better(cur,best))best=cur;
   }
   return best;
@@ -1076,13 +1076,13 @@ function tCell(c){var v=tval(c.key);return c.th.map(function(t){var x=TTASK.filt
   var s=c.x.k==="cnt"&&!tSrc(c.x)?'<span class="legend">no data</span>':v>=t[1]?'<span class="mdone">✓</span>':fmt(v)+" / "+fmt(t[1]);
   return '<span style="white-space:nowrap;margin-right:10px"><span class="legend">'+TTIER[t[0]]+':</span> '+s+'</span>'}).join(" ")}
 function renderTMastery(){
-  var TRANKS=[["Skilled Thief",106]],goal=106,trk="Skilled Thief";
+  var TRANKS=[["Skilled Thief",106],["Veteran Thief",211]],goal=+TMP.goal===106&&TMP.gpick?106:211,trk=goal===211?"Veteran Thief":"Skilled Thief";
   document.getElementById("mRouteT").textContent="Fastest route to "+trk;
   document.getElementById("mTrackHelp").textContent="Pre-filled from your Thieving Mastery Guild video (22 Nov). Update the numbers as you go (from the Thieving Mastery Guild window). Thieving Level comes from the level box below. Saved in this browser.";
   var g=document.getElementById("mGoal");
-  g.dataset.built="";g.innerHTML='<div style="margin:0 0 10px">'+TRANKS.map(function(r){return '<button class="btn" style="background:var(--best);border-color:var(--best);color:#fff;font-weight:700">'+r[0]+' ('+r[1]+' points)</button>'}).join("")+' <span class="legend">Apprentice Thief and Journeyman Thief already reached.</span></div>';
+  g.dataset.built="";g.innerHTML='<div style="margin:0 0 10px">'+TRANKS.map(function(r){var on=r[1]===goal;return '<button class="btn" data-tgoalb="'+r[1]+'" style="margin-right:6px;'+(on?'background:var(--best);border-color:var(--best);color:#fff;font-weight:700':'')+'">'+r[0]+' ('+r[1]+' points)</button>'}).join("")+' <span class="legend">Apprentice, Journeyman and Skilled Thief already reached.</span></div>';
   var P=tPlan(goal),st=P.st,left=Math.max(0,goal-st.pts);
-  document.getElementById("mHero").innerHTML='<div><div class="l">Mastery points</div><b>'+st.pts+' / '+goal+'</b></div><div><div class="l">Time to Skilled</div><b>'+(left===0?"Done":P.ok?"~"+mTime(P.T):"–")+'</b></div><div style="flex:1;min-width:200px" class="sub">'+TTIER.map(function(n,i){return n+' '+st.by[i]+' / '+st.tot[i]+' (+'+TPTS[i]+')'}).join(" · ")+'. Expected thieving time at your current level, Stealth and distractions; item tasks use average drop luck.</div>';
+  document.getElementById("mHero").innerHTML='<div><div class="l">Mastery points</div><b>'+st.pts+' / '+goal+'</b></div><div><div class="l">Time to '+(goal===211?"Veteran":"Skilled")+'</div><b>'+(left===0?"Done":P.ok?"~"+mTime(P.T):"–")+'</b></div><div style="flex:1;min-width:200px" class="sub">'+TTIER.map(function(n,i){return n+' '+st.by[i]+' / '+st.tot[i]+' (+'+TPTS[i]+')'}).join(" · ")+'. Expected thieving time at your current level, Stealth and distractions; item tasks use average drop luck.</div>';
   var nd=TTASK.filter(function(x){return tval(x.key)<x.n&&!tSrc(x)&&x.k!=="hid"}).map(function(x){return x.lbl});
   var R;
   if(left===0)R='<div class="legend">You have all '+goal+' points. '+trk+' reached!</div>';
@@ -1108,7 +1108,7 @@ function renderTMastery(){
 document.addEventListener("input",function(e){var d=e.target.dataset||{};
   if(d.tp!==undefined){var v=parseFloat(e.target.value);if(isNaN(v)||v<=0)delete TMP[d.tp];else TMP[d.tp]=v;tsave();clearTimeout(window._tmT);window._tmT=setTimeout(renderTMastery,250)}
   });
-document.addEventListener("click",function(e){var b=e.target.closest("[data-tgoalb]");if(b){TMP.goal=+b.dataset.tgoalb;tsave();renderTMastery()}});
+document.addEventListener("click",function(e){var b=e.target.closest("[data-tgoalb]");if(b){TMP.goal=+b.dataset.tgoalb;TMP.gpick=1;tsave();renderTMastery()}});
 
 var WMP={};try{WMP=JSON.parse(localStorage.getItem("mv2wmastery")||"{}")||{}}catch(e){WMP={}}
 function wsave(){try{localStorage.setItem("mv2wmastery",JSON.stringify(WMP))}catch(e){}}
