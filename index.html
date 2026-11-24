@@ -121,7 +121,8 @@ li{margin:4px 0}
 <button class="btn" id="saveReload" style="margin:0;display:none" title="Read the same save file again — no searching">Reload my save</button>
 <button class="btn" id="saveWatch" style="margin:0" title="Chrome or Edge: re-reads your save every 30 seconds while this page is open">Watch my save (auto-update)</button>
 <button class="btn" id="saveForget" style="margin:0">Forget</button></div>
-<div class="legend" id="saveStat" style="margin-top:6px">Fills in your levels, toolbelt gear, shop upgrades, distractions, guild ranks, pets and Mastery Guild progress from your <b>save_….sav</b> file (in the game’s <b>saves</b> folder). Read-only — the file never leaves your computer. Chrome and Edge won’t let a web page <i>watch</i> files inside AppData, so to auto-update, have Windows keep a copy in Documents (see the Help notes) and watch that copy.</div></div>
+<div class="legend" id="saveStat" style="margin-top:6px">Fills in your levels, toolbelt gear, shop upgrades, distractions, guild ranks, pets and Mastery Guild progress from your <b>save_….sav</b> file (in the game’s <b>saves</b> folder). Read-only — the file never leaves your computer. Chrome and Edge won’t let a web page <i>watch</i> files inside AppData, so to auto-update, have Windows keep a copy in Documents and watch that copy.
+<details style="margin-top:4px"><summary>How to keep a copy in Documents</summary>Open PowerShell, run this and leave the window open while you play (replace the first path with your <b>saves</b> folder). It re-copies the save every minute when the game saves:<br><code style="user-select:all">robocopy "C:\Users\YOU\AppData\Roaming\…\saves" "$env:USERPROFILE\Documents\MV2 Save" save_*.sav /MOT:1</code><br>Then click <b>Watch my save</b> and pick the copy in <b>Documents\MV2 Save</b>.</details></div></div>
 
 <div class="tabs" role="tablist">
   <button id="tX" class="on">XP / hour</button>
