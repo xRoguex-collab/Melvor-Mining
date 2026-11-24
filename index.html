@@ -117,11 +117,11 @@ li{margin:4px 0}
 <h1 id="pageTitle"></h1>
 <p class="sub" id="pageSub"></p>
 <div class="card" id="saveCard" style="padding:10px 14px"><div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><b style="margin-right:4px">Your game save</b>
-<button class="btn" id="saveLoad" style="margin:0" title="Opens in the folder you used last time">Load save file</button><input type="file" id="saveFile" accept=".sav,.bak" style="display:none">
+<button class="btn" id="saveLoad" style="margin:0">Load save file</button><input type="file" id="saveFile" accept=".sav,.bak" style="display:none">
 <button class="btn" id="saveReload" style="margin:0;display:none" title="Read the same save file again — no searching">Reload my save</button>
 <button class="btn" id="saveWatch" style="margin:0" title="Chrome or Edge: re-reads your save every 30 seconds while this page is open">Watch my save (auto-update)</button>
 <button class="btn" id="saveForget" style="margin:0">Forget</button></div>
-<div class="legend" id="saveStat" style="margin-top:6px">Fills in your levels, toolbelt gear, shop upgrades, distractions, guild ranks, pets and Mastery Guild progress from your <b>save_….sav</b> file (in the game’s <b>saves</b> folder). Read-only — the file never leaves your computer. In Chrome or Edge it remembers the file: after the first time, use <b>Reload my save</b>, and the file picker opens in your saves folder.</div></div>
+<div class="legend" id="saveStat" style="margin-top:6px">Fills in your levels, toolbelt gear, shop upgrades, distractions, guild ranks, pets and Mastery Guild progress from your <b>save_….sav</b> file (in the game’s <b>saves</b> folder). Read-only — the file never leaves your computer. Chrome and Edge won’t let a web page <i>watch</i> files inside AppData, so to auto-update, have Windows keep a copy in Documents (see the Help notes) and watch that copy.</div></div>
 
 <div class="tabs" role="tablist">
   <button id="tX" class="on">XP / hour</button>
@@ -3362,8 +3362,7 @@ function mv2UseHandle(h,watch){return mv2Perm(h).then(function(p){if(p!=="grante
 function mv2Err(err){if(err&&err.name==="AbortError")return;mv2Status(null,'<span class="warn">'+esc((err&&err.message)||String(err))+'</span>')}
 document.addEventListener("change",function(e){if(e.target.id==="saveFile"&&e.target.files[0]){MV2H=null;clearInterval(MV2T);mv2Load(e.target.files[0]);e.target.value=""}});
 document.addEventListener("click",function(e){var id=e.target.id;
-  if(id==="saveLoad"){if(!window.showOpenFilePicker){document.getElementById("saveFile").click();return}
-    mv2Pick().then(function(h){return mv2UseHandle(h,!!MV2H)}).catch(function(err){if(err&&err.name==="AbortError")return;document.getElementById("saveFile").click()})}
+  if(id==="saveLoad"){document.getElementById("saveFile").click()}// normal Windows file dialog: works in AppData (Chrome's remembered-file picker refuses AppData as a "system" folder)
   if(id==="saveReload"&&MV2SAVED){mv2UseHandle(MV2SAVED,!!MV2H).catch(mv2Err)}
   if(id==="saveWatch"){if(!window.showOpenFilePicker){mv2Status(null,'<span class="warn">Watching needs Chrome or Edge. Use “Load save file” instead.</span>');return}
     (MV2SAVED?Promise.resolve(MV2SAVED):mv2Pick()).then(function(h){return mv2UseHandle(h,true)})
